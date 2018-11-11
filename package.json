@@ -9,6 +9,7 @@
     "@vx/shape": "^0.0.179",
     "antd": "^3.10.5",
     "d3": "^5.7.0",
+    "papaparse": "^4.6.1",
     "react": "^16.6.1",
     "react-dom": "^16.6.1",
     "react-scripts": "2.1.1"

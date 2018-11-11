@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import * as d3 from "d3";
+import "./index.css";
+
 class Main extends Component {
   state = {
     data: [],
-    loading: true
+    loading: true,
+    names: ""
   };
   async componentDidMount() {
     let dataCollection = [];
@@ -11,24 +14,23 @@ class Main extends Component {
       // console.log(data)
       dataCollection.push(data);
     });
+
+    let names = "";
+    for (let row in dataCollection) {
+      names += dataCollection[row]["ResponseName"] + ", ";
+    }
+
     this.setState({
       data: dataCollection,
-      loading: false
+      loading: false,
+      names
     });
+
     console.log("hi");
     console.log(dataCollection);
   }
   render() {
-    let names = "";
-    if (!this.state.loading) {
-      if (this.state.data && this.state.data.length) {
-        for (let row in this.state.data) {
-          names += this.state.data[row]["ResponseName"] + ", ";
-        }
-      }
-    }
-
-    return <div>{names}</div>;
+    return <div>{this.state.loading ? [] : this.state.names}</div>;
   }
 }
 
