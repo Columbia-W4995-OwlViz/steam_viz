@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import * as d3 from "d3";
 class Main extends Component {
   state = {
-    data: []
+    data: [],
+    loading: true
   };
   async componentDidMount() {
     let dataCollection = [];
@@ -11,19 +12,23 @@ class Main extends Component {
       dataCollection.push(data);
     });
     this.setState({
-      data: dataCollection
+      data: dataCollection,
+      loading: false
     });
     console.log("hi");
     console.log(dataCollection);
   }
   render() {
-    return (
-      <div>
-        {this.state.data && this.state.data.length
-          ? this.state.data.toString()
-          : []}
-      </div>
-    );
+    let names = "";
+    if (!this.state.loading) {
+      if (this.state.data && this.state.data.length) {
+        for (let row in this.state.data) {
+          names += this.state.data[row]["ResponseName"] + ", ";
+        }
+      }
+    }
+
+    return <div>{names}</div>;
   }
 }
 
