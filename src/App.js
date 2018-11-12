@@ -26,9 +26,8 @@ class App extends Component {
           <Layout style={{ marginLeft: 200 }}>
             <Content style={{ margin: "24px 16px 0", overflow: "initial" }}>
               <div
-                style={{ padding: 24, background: "#fff", textAlign: "center" }}
+                style={{ padding: 24, background: "#000", textAlign: "center" }}
               >
-                content goes here
                 <Main />
               </div>
             </Content>

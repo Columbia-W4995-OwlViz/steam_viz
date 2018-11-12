@@ -1,0 +1,85 @@
+@import url("https://fonts.googleapis.com/css?family=Press+Start+2P");
+
+#main-canvas {
+  /* background-color: black; */
+}
+
+#yfilter {
+  /* background-color: black; */
+}
+
+#main_svg {
+  padding: 10px 0px;
+}
+
+.ant-input.my-input {
+  width: 35%;
+  float: right;
+  font-family: "Press Start 2P", cursive;
+  font-size: 12px;
+  background-color: black;
+  color: white;
+  border-color: white;
+}
+
+.ant-input.my-input:hover,
+.ant-input.my-input:focus {
+  border-color: white;
+}
+
+.ant-btn.my-btn {
+  width: 200px;
+  font-family: "Press Start 2P", cursive;
+  font-size: 10px;
+}
+
+.ant-btn-primary.my-btn {
+  background-color: black;
+  border-color: white;
+  border-left-color: white;
+  border-right-color: white;
+}
+
+.ant-btn-group.my-btn-group {
+  padding: 10px;
+}
+
+.ant-btn-primary.my-btn:hover,
+.ant-btn-primary.my-btn:focus {
+  color: black;
+  background-color: white;
+  border-color: white;
+}
+
+.ant-btn-primary.my-btn1:hover,
+.ant-btn-primary.my-btn1:focus {
+  color: black;
+  background-color: white;
+  border-color: white;
+}
+
+.ant-btn-group.my-btn-group
+  .ant-btn-primary.my-btn:first-child:not(:last-child) {
+  border-right-color: white;
+}
+
+.ant-btn-group.my-btn-group
+  .ant-btn-primary.my-btn:first-child:not(:last-child):hover {
+  border-right-color: black;
+}
+
+.ant-btn-group.my-btn-group
+  .ant-btn-primary.my-btn:last-child:not(:first-child) {
+  border-left-color: white;
+}
+
+.ant-btn-group.my-btn-group
+  .ant-btn-primary.my-btn:last-child:not(:first-child):hover {
+  border-left-color: black;
+}
+
+.ant-btn-group.my-btn-group
+  .ant-btn-primary.my-btn:not(:last-child):not(:first-child) {
+  border-left-color: white;
+  border-right-color: white;
+}
