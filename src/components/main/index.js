@@ -1,16 +1,31 @@
 import React, { Component } from "react";
 import * as d3 from "d3";
 import "./index.css";
-import { Button, Spin } from "antd";
+import { Button, Spin, Radio } from "antd";
 import { Input } from "antd";
 
 class Main extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      binThreshold: {
+        RecommendationCount: 200,
+        Metacritic: 100,
+        PriceInitial: 200
+      },
+      topFilter: "RecommendationCount",
+      bottomFilter: "SteamSpyOwners",
+      canvasKey: 0
+    };
+    this.handleTopFilter = this.handleTopFilter.bind(this);
+    this.handleBottomFilter = this.handleBottomFilter.bind(this);
+  }
   componentDidUpdate() {
     if (!this.props.data) return;
     const bins = this.dataBins(
       this.props.data,
-      "RecommendationCount",
-      "SteamSpyOwners"
+      this.state.topFilter,
+      this.state.bottomFilter
     );
     this.drawChart(bins);
   }
@@ -25,7 +40,7 @@ class Main extends Component {
 
   dataBins(data, xField, yField) {
     let x = data.map(record => parseInt(record[xField]));
-    let histogram = d3.histogram().thresholds(200);
+    let histogram = d3.histogram().thresholds(this.state.binThreshold[xField]);
     let bins = histogram(x);
     let joinBins = [];
     data.forEach(record => {
@@ -40,7 +55,7 @@ class Main extends Component {
         }
       });
     });
-    console.log(joinBins);
+    // console.log(joinBins);
     return joinBins;
   }
 
@@ -138,12 +153,32 @@ class Main extends Component {
     // END USE OF SOURCE
   }
 
+  handleTopFilter(e) {
+    this.setState({
+      topFilter: e.target.value,
+      canvasKey: this.state.canvasKey + 1
+    });
+  }
+
+  handleBottomFilter(e) {
+    this.setState({
+      bottomFilter: e.target.value,
+      canvasKey: this.state.canvasKey + 1
+    });
+  }
+
   render() {
-    const ButtonGroup = Button.Group;
     const { data, loading } = this.props;
+    const trivia = (
+      <div id="trivia">
+        <h3>This is Trivia {Math.random * 100}</h3>
+      </div>
+    );
+    setInterval(trivia, 1000);
     return (
       <div>
         <div id="canvas-wrapper">
+          <div id="trivia-sec">{trivia}</div>
           <div id="header">
             <Input className="my-input" placeholder="Enter another game..." />
           </div>
@@ -155,35 +190,45 @@ class Main extends Component {
               <Spin size="large" />
             </div>
           ) : (
-            <div id="main-canvas">
+            <div id="main-canvas" key={this.state.canvasKey}>
               <svg id="main_svg" viewBox="-50 -100 1600 1000" />
             </div>
           )}
           <div id="yfilter">
-            <ButtonGroup className="my-btn-group">
-              <Button className="my-btn" type="primary">
+            <Radio.Group
+              value={this.state.topFilter}
+              className="my-btn-group"
+              onChange={this.handleTopFilter}
+            >
+              <Radio.Button value="RecommendationCount" className="my-btn">
                 Recommendation
-              </Button>
-              <Button className="my-btn" type="primary">
+              </Radio.Button>
+              <Radio.Button value="Metacritic" className="my-btn">
                 Metacritic
-              </Button>
-              <Button className="my-btn" type="primary">
+              </Radio.Button>
+              <Radio.Button value="PriceInitial" className="my-btn">
                 Price
-              </Button>
-            </ButtonGroup>
+              </Radio.Button>
+            </Radio.Group>
           </div>
           <div id="xfilter">
-            <ButtonGroup className="my-btn-group">
-              <Button className="my-btn my-btn1" type="primary">
+            <Radio.Group
+              value={this.state.bottomFilter}
+              className="my-btn-group"
+              onChange={this.handleBottomFilter}
+            >
+              <Radio.Button value="SteamSpyOwners" className="my-btn my-btn1">
                 Number of Owners
-              </Button>
-              <Button className="my-btn my-btn1" type="primary">
+              </Radio.Button>
+              <Radio.Button
+                value="SteamSpyPlayersEstimate"
+                className="my-btn my-btn1"
+              >
                 Number of Players
-              </Button>
-            </ButtonGroup>
+              </Radio.Button>
+            </Radio.Group>
           </div>
         </div>
-        }
       </div>
     );
   }

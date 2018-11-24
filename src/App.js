@@ -4,6 +4,7 @@ import { Button } from "antd";
 import { Layout, Menu, Icon } from "antd";
 import * as d3 from "d3";
 import Main from "./components/main";
+import Timeline from "./components/timeline";
 import logo from "./logo.svg";
 import "./App.css";
 const { Header, Content, Footer, Sider } = Layout;
