@@ -13,7 +13,7 @@ class App extends Component {
     return (
       <div className="App">
         <Layout>
-          <Sider
+          {/* <Sider
             style={{
               overflow: "auto",
               height: "100vh",
@@ -22,16 +22,16 @@ class App extends Component {
             }}
           >
             <div className="logo" />
-          </Sider>
-          <Layout style={{ marginLeft: 200 }}>
-            <Content style={{ margin: "24px 16px 0", overflow: "initial" }}>
+          </Sider> */}
+          <Layout style={{ marginLeft: 0 }}>
+            <Content style={{ margin: "0", overflow: "initial" }}>
               <div
                 style={{ padding: 24, background: "#000", textAlign: "center" }}
               >
                 <Main />
               </div>
             </Content>
-            <Footer style={{ textAlign: "center" }} />
+            {/* <Footer style={{ textAlign: "center" }} /> */}
           </Layout>
         </Layout>
       </div>

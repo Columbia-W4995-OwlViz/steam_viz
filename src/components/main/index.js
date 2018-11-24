@@ -41,7 +41,7 @@ class Main extends Component {
     let histogram = d3.histogram().thresholds(200);
     let bins = histogram(x);
     let joinBins = [];
-    data.map(record => {
+    data.forEach(record => {
       bins.forEach((item, i) => {
         if (record[xField] >= item.x0 && record[xField] < item.x1) {
           joinBins.push({
