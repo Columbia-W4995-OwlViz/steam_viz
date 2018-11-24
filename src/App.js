@@ -9,6 +9,21 @@ import "./App.css";
 const { Header, Content, Footer, Sider } = Layout;
 
 class App extends Component {
+  state = {
+    data: [],
+    loading: true
+  };
+  async componentDidMount() {
+    let dataCollection = [];
+    await d3.csv("steam_game_features.csv", data => {
+      dataCollection.push(data);
+    });
+
+    this.setState({
+      data: dataCollection,
+      loading: false
+    });
+  }
   render() {
     return (
       <div className="App">
@@ -28,7 +43,7 @@ class App extends Component {
               <div
                 style={{ padding: 24, background: "#000", textAlign: "center" }}
               >
-                <Main />
+                <Main data={this.state.data} loading={this.state.loading} />
               </div>
             </Content>
             {/* <Footer style={{ textAlign: "center" }} /> */}

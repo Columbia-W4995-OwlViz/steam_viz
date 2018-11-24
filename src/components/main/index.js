@@ -5,23 +5,10 @@ import { Button } from "antd";
 import { Input } from "antd";
 
 class Main extends Component {
-  state = {
-    data: [],
-    loading: true
-  };
-
-  async componentDidMount() {
-    let dataCollection = [];
-    await d3.csv("steam_game_features.csv", data => {
-      dataCollection.push(data);
-    });
-
-    this.setState({
-      data: dataCollection,
-      loading: false
-    });
+  componentDidUpdate() {
+    if (!this.props.data) return;
     const bins = this.dataBins(
-      dataCollection,
+      this.props.data,
       "RecommendationCount",
       "SteamSpyOwners"
     );
@@ -153,9 +140,10 @@ class Main extends Component {
 
   render() {
     const ButtonGroup = Button.Group;
+    const { data, loading } = this.props;
     return (
       <div>
-        {this.state.loading ? (
+        {loading ? (
           <p>loading...</p>
         ) : (
           <div id="canvas-wrapper">
