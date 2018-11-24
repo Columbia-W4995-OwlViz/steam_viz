@@ -83,3 +83,10 @@
   border-left-color: white;
   border-right-color: white;
 }
+
+.loading {
+  margin: auto;
+}
+.loading .ant-spin-dot i {
+  background-color: #eeeeee;
+}

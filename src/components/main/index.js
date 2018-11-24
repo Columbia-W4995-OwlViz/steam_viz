@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import * as d3 from "d3";
 import "./index.css";
-import { Button } from "antd";
+import { Button, Spin } from "antd";
 import { Input } from "antd";
 
 class Main extends Component {
@@ -143,41 +143,47 @@ class Main extends Component {
     const { data, loading } = this.props;
     return (
       <div>
-        {false ? (
-          <p>loading...</p>
-        ) : (
-          <div id="canvas-wrapper">
-            <div id="header">
-              <Input className="my-input" placeholder="Enter another game..." />
+        <div id="canvas-wrapper">
+          <div id="header">
+            <Input className="my-input" placeholder="Enter another game..." />
+          </div>
+
+          {loading ? (
+            <div className="loading">
+              <br />
+              <br />
+              <Spin size="large" />
             </div>
+          ) : (
             <div id="main-canvas">
               <svg id="main_svg" viewBox="-50 -100 1600 1000" />
             </div>
-            <div id="yfilter">
-              <ButtonGroup className="my-btn-group">
-                <Button className="my-btn" type="primary">
-                  Recommendation
-                </Button>
-                <Button className="my-btn" type="primary">
-                  Metacritic
-                </Button>
-                <Button className="my-btn" type="primary">
-                  Price
-                </Button>
-              </ButtonGroup>
-            </div>
-            <div id="xfilter">
-              <ButtonGroup className="my-btn-group">
-                <Button className="my-btn my-btn1" type="primary">
-                  Number of Owners
-                </Button>
-                <Button className="my-btn my-btn1" type="primary">
-                  Number of Players
-                </Button>
-              </ButtonGroup>
-            </div>
+          )}
+          <div id="yfilter">
+            <ButtonGroup className="my-btn-group">
+              <Button className="my-btn" type="primary">
+                Recommendation
+              </Button>
+              <Button className="my-btn" type="primary">
+                Metacritic
+              </Button>
+              <Button className="my-btn" type="primary">
+                Price
+              </Button>
+            </ButtonGroup>
           </div>
-        )}
+          <div id="xfilter">
+            <ButtonGroup className="my-btn-group">
+              <Button className="my-btn my-btn1" type="primary">
+                Number of Owners
+              </Button>
+              <Button className="my-btn my-btn1" type="primary">
+                Number of Players
+              </Button>
+            </ButtonGroup>
+          </div>
+        </div>
+        }
       </div>
     );
   }
