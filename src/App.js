@@ -13,15 +13,15 @@ class App extends Component {
     data: [],
     loading: true
   };
-  async componentDidMount() {
-    let dataCollection = [];
-    await d3.csv("steam_game_features.csv", data => {
-      dataCollection.push(data);
-    });
-
-    this.setState({
-      data: dataCollection,
-      loading: false
+  componentDidMount() {
+    d3.csv("steam_game_features.csv", newData => {
+      return newData;
+    }).then(data => {
+      console.log(data);
+      this.setState({
+        data,
+        loading: false
+      });
     });
   }
   render() {

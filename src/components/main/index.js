@@ -143,7 +143,7 @@ class Main extends Component {
     const { data, loading } = this.props;
     return (
       <div>
-        {loading ? (
+        {false ? (
           <p>loading...</p>
         ) : (
           <div id="canvas-wrapper">
