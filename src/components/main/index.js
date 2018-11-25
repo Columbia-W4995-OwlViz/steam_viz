@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import * as d3 from "d3";
-import "./index.css";
-import { Button, Spin, Radio } from "antd";
+import { Spin, Radio } from "antd";
 import { Input } from "antd";
+
+import Trivia from "./components/Trivia";
+import "./index.css";
 
 class Main extends Component {
   constructor(props) {
@@ -15,13 +17,22 @@ class Main extends Component {
       },
       topFilter: "RecommendationCount",
       bottomFilter: "SteamSpyOwners",
-      canvasKey: 0
+      canvasKey: 1
     };
     this.handleTopFilter = this.handleTopFilter.bind(this);
     this.handleBottomFilter = this.handleBottomFilter.bind(this);
   }
-  componentDidUpdate() {
+
+  componentDidMount() {}
+
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   if (nextProps.data !== this.props.data) return true;
+  //   if (nextState.canvasKey === this.state.canvasKey) return false;
+  // }
+
+  componentDidUpdate(prevProps, prevState) {
     if (!this.props.data) return;
+
     const bins = this.dataBins(
       this.props.data,
       this.state.topFilter,
@@ -168,21 +179,14 @@ class Main extends Component {
   }
 
   render() {
-    const { data, loading } = this.props;
-    const trivia = (
-      <div id="trivia">
-        <h3>This is Trivia {Math.random * 100}</h3>
-      </div>
-    );
-    setInterval(trivia, 1000);
+    const { loading } = this.props;
     return (
       <div>
         <div id="canvas-wrapper">
-          <div id="trivia-sec">{trivia}</div>
+          <Trivia />
           <div id="header">
             <Input className="my-input" placeholder="Enter another game..." />
           </div>
-
           {loading ? (
             <div className="loading">
               <br />

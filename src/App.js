@@ -21,7 +21,8 @@ class App extends Component {
       console.log(data);
       this.setState({
         data,
-        loading: false
+        loading: false,
+        prelude: false
       });
     });
   }
@@ -44,7 +45,14 @@ class App extends Component {
               <div
                 style={{ padding: 24, background: "#000", textAlign: "center" }}
               >
-                <Main data={this.state.data} loading={this.state.loading} />
+                {this.state.prelude ? (
+                  <Timeline
+                    data={this.state.data}
+                    loading={this.state.loading}
+                  />
+                ) : (
+                  <Main data={this.state.data} loading={this.state.loading} />
+                )}
               </div>
             </Content>
             {/* <Footer style={{ textAlign: "center" }} /> */}

@@ -1,20 +1,36 @@
 import React, { Component } from "react";
 import * as d3 from "d3";
 import "./index.css";
+import { Button, Spin, Radio } from "antd";
 
 class Timeline extends Component {
   constructor(props) {
     super(props);
     this.extractYear = this.extractYear.bind(this);
     this.drawTimeline = this.drawTimeline.bind(this);
+    this.dataMapper = this.dataMapper.bind(this);
   }
 
   componentDidUpdate() {
     if (!this.props.data) return;
-    this.drawTimeline(this.props.data, "ReleaseDate", "SteamSpyOwners");
+    const newData = this.dataMapper(this.props.data);
+    this.drawTimeline(newData, "ReleaseDate", "SteamSpyOwners");
   }
 
-  dataMapper(data, field) {}
+  dataMapper(data, xField, yField) {
+    let newData = [];
+    data
+      .filter(record => (record[xField] ? true : false))
+      .forEach(record => {
+        newData.push({
+          id: record["QueryID"],
+          x: parseInt(this.extractYear(record[xField])),
+          y: parseInt(record[yField])
+        });
+      });
+    console.log(newData);
+    return newData;
+  }
 
   extractYear(date) {
     let time = date.split(" ");
@@ -27,27 +43,8 @@ class Timeline extends Component {
     }
   }
 
-  // dataBins(data, xField, yField) {
-  //   let histogram = d3.histogram().thresholds(200);
-  //   let bins = histogram(x);
-  //   let joinBins = [];
-  //   data.forEach(record => {
-  //     bins.forEach((item, i) => {
-  //       if (record[xField] >= item.x0 && record[xField] < item.x1) {
-  //         joinBins.push({
-  //           id: record["QueryID"],
-  //           name: item.x1.toString(),
-  //           x: parseInt(record[xField]),
-  //           y: parseInt(record[yField])
-  //         });
-  //       }
-  //     });
-  //   });
-  //   console.log(joinBins);
-  //   return joinBins;
-  // }
-
   drawTimeline(data, xField, yField) {
+    console.log("called drawTimeline");
     const svg = d3.select("#timeline_svg").datum(data);
     const width = 1600;
     const height = 800;
@@ -55,16 +52,12 @@ class Timeline extends Component {
 
     const x = d3
       .scaleBand()
-      .domain(
-        data
-          .filter(record => (record[xField] ? true : false))
-          .map(record => parseInt(this.extractYear(record[xField])))
-      )
+      .domain(data.map(d => d.x))
       .range(margin.left, width - margin.right);
 
     const y = d3
       .scaleLinear()
-      .domain([0, d3.max(data, d => parseInt(d[yField]))])
+      .domain([0, d3.max(data, d => d.y)])
       .nice()
       .range([height - margin.bottom, 0]);
 
@@ -89,6 +82,60 @@ class Timeline extends Component {
           .tickSize(20)
           .tickPadding(10)
       );
+
+    const dotColor = d3
+      .scaleLinear()
+      .domain([
+        0,
+        d3.median(data, d => parseInt(d.y)),
+        d3.max(data, d => parseInt(d.y))
+      ])
+      .nice()
+      .range(["orange", "white", "steelblue"]);
+
+    svg
+      .append("g")
+      .call(xAxis)
+      .attr("stroke-width", 2)
+      .attr("color", "white")
+      .style("font-size", "14px");
+
+    svg
+      .append("g")
+      .call(yAxis)
+      .attr("color", "white")
+      .style("font-size", "14px");
+
+    svg
+      .append("g")
+      .selectAll("circle")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("cx", d => x(d.x))
+      .attr("cy", d => y(d.y))
+      .attr("r", 7)
+      .attr("fill", d => dotColor(parseInt(d.y)))
+      .attr("opacity", 0.5);
+  }
+
+  render() {
+    const loading = this.props.loading;
+    return (
+      <div>
+        <div id="canvas-wrapper">
+          {loading ? (
+            <div className="loading">
+              <br />
+              <br />
+              <Spin size="large" />
+            </div>
+          ) : (
+            <svg id="timeline_svg" viewBox="-50 -100 1600 1000" />
+          )}
+        </div>
+      </div>
+    );
   }
 }
 

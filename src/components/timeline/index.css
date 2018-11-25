@@ -1,15 +1,13 @@
 @import url("https://fonts.googleapis.com/css?family=Press+Start+2P");
 
-#main-canvas {
-  /* background-color: black; */
-}
-
-#yfilter {
-  /* background-color: black; */
-}
-
 #timeline_svg {
   padding: 10px 0px;
+}
+
+#trivia {
+  color: white;
+  font-family: "Press Start 2P", cursive;
+  font-size: 10px;
 }
 
 .ant-input.my-input {
@@ -20,6 +18,16 @@
   background-color: black;
   border-color: white;
   color: white;
+}
+
+.ant-input.my-input:hover {
+  border-color: white;
+  border-width: 1.5px;
+}
+
+.ant-input.my-input:focus {
+  border-color: white;
+  border-width: 1.5px;
 }
 
 .ant-radio-group.my-btn-group {

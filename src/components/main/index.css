@@ -12,6 +12,13 @@
   padding: 10px 0px;
 }
 
+#trivia,
+#trivia-sec {
+  color: white;
+  font-family: "Press Start 2P", cursive;
+  font-size: 10px;
+}
+
 .ant-input.my-input {
   width: 400px;
   float: right;
