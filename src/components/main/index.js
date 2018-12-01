@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import * as d3 from "d3";
 import { Spin, Radio, Input, Modal, Button } from "antd";
 import Trivia from "./components/Trivia";
+import DataModalContent from "./components/DataModalContent";
 import "./index.css";
 
 class Main extends Component {
@@ -25,7 +26,10 @@ class Main extends Component {
     this.handleModalClick = this.handleModalClick.bind(this);
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    // var element = document.getElementsByClassName("ant-modal-content");
+    // element.classList.add("my-modal-content");
+  }
 
   // shouldComponentUpdate(nextProps, nextState) {
   //   if (nextProps.data !== this.props.data) return true;
@@ -34,7 +38,11 @@ class Main extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (!this.props.data) return;
-    if (prevProps.loading === this.props.loading) return;
+    if (
+      prevProps.loading === this.props.loading &&
+      prevState.canvasKey === this.state.canvasKey
+    )
+      return;
     const bins = this.dataBins(
       this.props.data,
       this.state.topFilter,
@@ -215,31 +223,36 @@ class Main extends Component {
   }
 
   render() {
-    const { loading } = this.props;
+    const { loading, data, dataMap } = this.props;
+    const { dataModalID } = this.state;
     return (
       <div>
         <div id="canvas-wrapper">
           <Trivia />
-          <Modal
-            className="my-modal"
-            title={
-              !loading
-                ? this.props.dataMap[this.state.dataModalID]["ResponseName"]
-                : ""
-            }
-            visible={this.state.showDataModal}
-            onOk={this.handleModalClick}
-            onCancel={this.handleModalClick}
-            footer={[
-              <Button key="ok" type="primary" onClick={this.handleModalClick}>
-                OK
-              </Button>
-            ]}
-          >
-            <p>Some contents...</p>
-            <p>Some contents...</p>
-            <p>Some contents...</p>
-          </Modal>
+          {!loading ? (
+            <Modal
+              className="my-modal"
+              title={dataMap[dataModalID]["ResponseName"]}
+              visible={this.state.showDataModal}
+              onOk={this.handleModalClick}
+              onCancel={this.handleModalClick}
+              footer={[
+                <Button key="ok" type="primary" onClick={this.handleModalClick}>
+                  OK
+                </Button>
+              ]}
+            >
+              <DataModalContent
+                loading={loading}
+                data={data}
+                dataMap={dataMap}
+                dataID={dataModalID}
+              />
+            </Modal>
+          ) : (
+            []
+          )}
+
           <div id="header">
             <Input className="my-input" placeholder="Enter another game..." />
           </div>
