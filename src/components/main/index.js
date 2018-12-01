@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import * as d3 from "d3";
-import { Spin, Radio } from "antd";
-import { Input } from "antd";
-
+import { Spin, Radio, Input, Modal, Button } from "antd";
 import Trivia from "./components/Trivia";
 import "./index.css";
 
@@ -17,10 +15,14 @@ class Main extends Component {
       },
       topFilter: "RecommendationCount",
       bottomFilter: "SteamSpyOwners",
-      canvasKey: 1
+      canvasKey: 1,
+      showDataModal: false,
+      dataModalID: 10
     };
     this.handleTopFilter = this.handleTopFilter.bind(this);
     this.handleBottomFilter = this.handleBottomFilter.bind(this);
+    this.drawChart = this.drawChart.bind(this);
+    this.handleModalClick = this.handleModalClick.bind(this);
   }
 
   componentDidMount() {}
@@ -32,13 +34,13 @@ class Main extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (!this.props.data) return;
-
+    if (prevProps.loading === this.props.loading) return;
     const bins = this.dataBins(
       this.props.data,
       this.state.topFilter,
       this.state.bottomFilter
     );
-    this.drawChart(bins);
+    this.drawChart(bins, this.props.dataMap);
   }
 
   //field: RecommendationCount
@@ -73,7 +75,7 @@ class Main extends Component {
   /*
    * https://beta.observablehq.com/@baspieren/functional-programming-d3-scatterplot
    */
-  drawChart(bins) {
+  drawChart(bins, dataMap) {
     bins = bins.filter(record => record.y < 8000000);
     //ACCESS this.state.data
     const svg = d3.select("#main_svg").datum(bins);
@@ -146,22 +148,50 @@ class Main extends Component {
       .attr("cx", d => x(d.name))
       .attr("cy", d => y(parseInt(d.y)))
       .attr("r", 8)
-      .attr("fill", d => dotColor(parseInt(d.y)))
-      .attr("opacity", 0.5);
-    // // START USE OF SOURCE: Martijn Reeuwijk
-    // .on("mouseover", function(d) {
-    //   d3.select(this)
-    //     .attr("circle", 10)
-    //     .transition()
-    //     .attr("fill", "#2d2d2d");
-    // })
-    // .on("mouseout", function(d) {
-    //   d3.select(this)
-    //     .attr("circle", 10)
-    //     .transition()
-    //     .attr("fill", dotColor(d.pages));
-    // });
+      // .attr("fill", d => dotColor(parseInt(d.y)))
+      .attr("fill", "white")
+      .attr("opacity", 0.5)
+      // START USE OF SOURCE: Martijn Reeuwijk
+      .on("mouseover", function(d) {
+        d3.select(this)
+          .attr("r", 10)
+          .attr("opacity", 0.5)
+          .attr("fill", "#ff1919")
+          .transition();
+        div
+          .transition()
+          .duration(200)
+          .style("opacity", 0.7);
+        div
+          .html(dataMap[d.id]["ResponseName"])
+          .style("left", d3.event.pageX - 100 + "px")
+          .style("top", d3.event.pageY + 20 + "px");
+      })
+      .on("mouseout", function(d) {
+        d3.select(this)
+          .attr("r", 8)
+          .attr("opacity", 0.5)
+          // .attr("fill", d => dotColor(parseInt(d.y)))
+          .attr("fill", "white")
+          .transition();
+        div
+          .transition()
+          .duration(500)
+          .style("opacity", 0);
+      })
+      .on("mousedown", d => {
+        this.setState({
+          showDataModal: true,
+          dataModalID: d.id
+        });
+      });
     // END USE OF SOURCE
+
+    var div = d3
+      .select("body")
+      .append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
   }
 
   handleTopFilter(e) {
@@ -178,12 +208,38 @@ class Main extends Component {
     });
   }
 
+  handleModalClick(e) {
+    this.setState({
+      showDataModal: false
+    });
+  }
+
   render() {
     const { loading } = this.props;
     return (
       <div>
         <div id="canvas-wrapper">
           <Trivia />
+          <Modal
+            className="my-modal"
+            title={
+              !loading
+                ? this.props.dataMap[this.state.dataModalID]["ResponseName"]
+                : ""
+            }
+            visible={this.state.showDataModal}
+            onOk={this.handleModalClick}
+            onCancel={this.handleModalClick}
+            footer={[
+              <Button key="ok" type="primary" onClick={this.handleModalClick}>
+                OK
+              </Button>
+            ]}
+          >
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+          </Modal>
           <div id="header">
             <Input className="my-input" placeholder="Enter another game..." />
           </div>

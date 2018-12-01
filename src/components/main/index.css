@@ -111,3 +111,38 @@
 .loading .ant-spin-dot i {
   background-color: #eeeeee;
 }
+
+div.tooltip {
+  color: white;
+  font-size: 12px;
+  font-family: "Press Start 2P", cursive;
+  position: absolute;
+  text-align: center;
+  width: 15vw;
+  height: auto;
+  padding: 10px;
+  background: black;
+  border: 2px solid white;
+  pointer-events: none;
+}
+
+div p {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.my-modal.ant-modal {
+  width: 50vw;
+  height: auto;
+}
+
+.my-modal.ant-modal.ant-modal-content {
+  color: white;
+  font-size: 12px;
+  font-family: "Press Start 2P", cursive;
+  background: black;
+  width: 20vw;
+  height: auto;
+  border-radius: 0px;
+  border: 2px solid white;
+}

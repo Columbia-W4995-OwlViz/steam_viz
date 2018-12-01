@@ -12,15 +12,21 @@ const { Header, Content, Footer, Sider } = Layout;
 class App extends Component {
   state = {
     data: [],
+    dataMap: {},
     loading: true
   };
   componentDidMount() {
     d3.csv("steam_game_features.csv", newData => {
       return newData;
     }).then(data => {
-      console.log(data);
+      // console.log(data);
+      let dataMap = {};
+      data.forEach(e => {
+        dataMap[e.QueryID] = e;
+      });
       this.setState({
         data,
+        dataMap,
         loading: false,
         prelude: false
       });
@@ -48,10 +54,15 @@ class App extends Component {
                 {this.state.prelude ? (
                   <Timeline
                     data={this.state.data}
+                    dataMap={this.state.dataMap}
                     loading={this.state.loading}
                   />
                 ) : (
-                  <Main data={this.state.data} loading={this.state.loading} />
+                  <Main
+                    data={this.state.data}
+                    dataMap={this.state.dataMap}
+                    loading={this.state.loading}
+                  />
                 )}
               </div>
             </Content>
