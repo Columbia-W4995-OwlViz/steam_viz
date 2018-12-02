@@ -32,7 +32,7 @@ export default class Trivia extends Component {
       this.setState({
         trivia: this.randomTrivia()
       });
-    }, 5000);
+    }, 8000);
   }
 
   render() {

@@ -6,6 +6,11 @@ import Search from "./search";
 import "./index.css";
 
 const Option = Select.Option;
+d3.selection.prototype.moveToFront = function() {
+  return this.each(function() {
+    this.parentNode.appendChild(this);
+  });
+};
 class Main extends Component {
   constructor(props) {
     super(props);
@@ -33,6 +38,8 @@ class Main extends Component {
     this.handleGameSearchChange = this.handleGameSearchChange.bind(this);
     this.handleGameSearchKeyDown = this.handleGameSearchKeyDown.bind(this);
     this.handleGameSearchSearch = this.handleGameSearchSearch.bind(this);
+    this.handleClear = this.handleClear.bind(this);
+    this.handleTooltipClick = this.handleTooltipClick.bind(this);
   }
 
   componentDidMount() {
@@ -86,48 +93,43 @@ class Main extends Component {
     this.drawChart(bins, this.props.dataMap);
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   // if (
-  //   //   this.props.loading === nextProps.loading &&
-  //   //   this.state.canvasKey === nextState.canvasKey
-  //   // )
-  //   //   return false;
-  //   return true;
-  // }
-
   componentDidUpdate(prevProps, prevState) {
-    if (!this.props.data) return;
+    // if (!(this.props.data && this.props.data.length)) return;
+    if (this.props.loading) return;
+    if (this.state.gameSearchValue === undefined) {
+      d3.select("#tooltip_gamesearch")
+        .style("opacity", 0)
+        .transition();
+    }
+    if (prevState.gameSearchValue !== undefined) {
+      d3.select("circle#circle_id__" + prevState.gameSearchValue)
+        .attr("opacity", 0.5)
+        .attr("fill", "white")
+        .transition();
+    }
 
     if (this.state.gameSearchValue !== undefined) {
-      // d3.select("body")
-      //   .append("p")
-      //   .html("hello");
-      d3.select("circle#id__" + this.state.gameSearchValue)
-        .attr("opacity", 0.5)
+      d3.select("circle#circle_id__" + this.state.gameSearchValue)
+        .attr("opacity", 0.8)
         .attr("fill", "#ff1919")
+        .moveToFront()
         .transition();
-      let cx = d3.select("circle#id__" + this.state.gameSearchValue).attr("cx");
-      let cy = d3.select("circle#id__" + this.state.gameSearchValue).attr("cy");
-      // tooltip div
-      d3.select("body")
-        .append("div")
-        .html(
-          this.props.dataMap["" + this.state.gameSearchValue]["ResponseName"]
-        )
-        .style("left", cx + "px")
-        .style("top", cy + 10000 + "px")
-        .attr("id", "id__" + this.state.gameSearchValue)
-        .attr("class", "tooltip")
-        .style("opacity", 0.8);
-      console.log(
-        d3.select("div#id__" + this.state.gameSearchValue).attr("opacity")
+      let c = document.getElementById(
+        "circle_id__" + this.state.gameSearchValue
       );
-      // .attr("id", "id__" + this.state.gameSearchValue)
-    } else {
-      // div
-      //   .transition()
-      //   .duration(500)
-      //   .style("opacity", 0);
+      if (c) {
+        let matrix = c
+          .getScreenCTM()
+          .translate(+c.getAttribute("cx"), +c.getAttribute("cy"));
+
+        d3.select("#tooltip_gamesearch")
+          // .html(
+          //   this.props.dataMap["" + this.state.gameSearchValue]["ResponseName"]
+          // )
+          .style("left", window.pageXOffset + matrix.e - 100 + "px")
+          .style("top", window.pageYOffset + matrix.f + 20 + "px")
+          .style("opacity", 0.8);
+      }
     }
 
     //init or redraw everything, BE CAREFUL
@@ -191,7 +193,7 @@ class Main extends Component {
    * https://beta.observablehq.com/@baspieren/functional-programming-d3-scatterplot
    */
   drawChart(bins, dataMap) {
-    bins = bins.filter(record => record.y < 8000000);
+    // bins = bins.filter(record => record.y < 8000000);
     //ACCESS this.state.data
     const svg = d3.select("#main_svg").datum(bins);
     const width = 1600;
@@ -286,7 +288,7 @@ class Main extends Component {
       .data(bins)
       .enter()
       .append("circle")
-      .attr("id", d => "id__" + d.id)
+      .attr("id", d => "circle_id__" + d.id)
       .attr("cx", d => x(d.name))
       .attr("cy", d => y(parseInt(d.y)))
       .attr("r", 8)
@@ -304,10 +306,14 @@ class Main extends Component {
           .transition()
           .duration(200)
           .style("opacity", 0.8);
+        let matrix = this.getScreenCTM().translate(
+          +this.getAttribute("cx"),
+          +this.getAttribute("cy")
+        );
         div
           .html(dataMap[d.id]["ResponseName"])
-          .style("left", d3.event.pageX - 100 + "px")
-          .style("top", d3.event.pageY + 20 + "px");
+          .style("left", window.pageXOffset + matrix.e - 100 + "px")
+          .style("top", window.pageYOffset + matrix.f + 20 + "px");
       })
       .on("mouseout", function(d) {
         d3.select(this)
@@ -386,6 +392,21 @@ class Main extends Component {
   //   document.getElementsByClassName("my-modal").style.display = "none";
   // }
 
+  handleClear(e) {
+    this.setState({
+      gameSearchValue: undefined,
+      gameSearchOptions: this.state.gameSearch.exec("")
+    });
+  }
+
+  handleTooltipClick(e) {
+    console.log("tooltipclick");
+    this.setState({
+      showDataModal: true,
+      dataModalID: this.state.gameSearchValue
+    });
+  }
+
   render() {
     const { loading, data, dataMap } = this.props;
     const { dataModalID } = this.state;
@@ -429,6 +450,16 @@ class Main extends Component {
               <Icon type="left" />
               Timeline
             </Button>
+            <Button
+              className="my-clear-btn"
+              onClick={this.handleClear}
+              style={{
+                display:
+                  this.state.gameSearchValue !== undefined ? "inline" : "none"
+              }}
+            >
+              Clear
+            </Button>
             <Select
               className="my-select"
               dropdownClassName="my-dropdown"
@@ -462,7 +493,6 @@ class Main extends Component {
             </div>
           ) : (
             <div id="main-canvas" key={this.state.canvasKey}>
-              {/* <svg id="main_svg" viewBox="-50 -100 1600 1000" /> */}
               <svg id="main_svg" viewBox="-100 -100 1700 650" />
             </div>
           )}
@@ -504,6 +534,16 @@ class Main extends Component {
             </Radio.Group>
           </div>
         </div>
+        <Button
+          className="tooltip"
+          style={{ opacity: 0, position: "absolute" }}
+          id="tooltip_gamesearch"
+          onClick={this.handleTooltipClick}
+        >
+          {this.state.gameSearchValue !== undefined
+            ? dataMap[this.state.gameSearchValue].ResponseName
+            : ""}
+        </Button>
       </div>
     );
   }

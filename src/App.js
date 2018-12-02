@@ -8,7 +8,6 @@ import Trivia from "./components/main/components/Trivia";
 import "./App.css";
 const { Content } = Layout;
 
-const { Option } = Select;
 class App extends Component {
   constructor(props) {
     super(props);
@@ -40,6 +39,7 @@ class App extends Component {
         uniqueIDs.add(d.QueryID);
       });
       const refinedData = Array.from(uniqueIDs).map(uid => dataMap[uid]);
+      // const filteredData = refinedData.filter();
       // console.log(refinedData);
       this.setState({
         data: refinedData,
