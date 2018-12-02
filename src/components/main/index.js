@@ -147,7 +147,7 @@ class Main extends Component {
    * https://beta.observablehq.com/@baspieren/functional-programming-d3-scatterplot
    */
   drawChart(bins, dataMap) {
-    bins = bins.filter(record => record.y < 8000000);
+    // bins = bins.filter(record => record.y < 8000000);
     //ACCESS this.state.data
     const svg = d3.select("#main_svg").datum(bins);
     const width = 1600;
@@ -397,7 +397,14 @@ class Main extends Component {
           )}
 
           <div id="header">
-            <Button className="my-clear-btn" onClick={this.handleClear}>
+            <Button
+              className="my-clear-btn"
+              onClick={this.handleClear}
+              style={{
+                display:
+                  this.state.gameSearchValue !== undefined ? "inline" : "none"
+              }}
+            >
               Clear
             </Button>
             <Select
