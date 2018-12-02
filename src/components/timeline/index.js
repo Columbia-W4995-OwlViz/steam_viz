@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import * as d3 from "d3";
-import Trivia from "../main/components/Trivia";
 import "./index.css";
 import { Button, Spin, Steps, Popover, Carousel, Modal, Icon } from "antd";
 
@@ -8,7 +7,8 @@ class Timeline extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      visible: false
+      visible: false,
+      chap: 0
     };
     this.extractYear = this.extractYear.bind(this);
     this.drawTimeline = this.drawTimeline.bind(this);
@@ -16,12 +16,23 @@ class Timeline extends Component {
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
     this.onCarouselChange = this.onCarouselChange.bind(this);
-    this.onOkTextClick = this.onOkTextClick.bind(this);
+  }
+
+  componentDidMount() {
+    if (!this.props.data || this.props.data.length === 0) return;
+    console.log("didmount");
+    const newData = this.dataMapper(
+      this.props.data,
+      "ReleaseDate",
+      "SteamSpyOwners"
+    );
+    this.drawTimeline(newData, "ReleaseDate", "SteamSpyOwners");
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (!this.props.data) return;
     if (prevState.visible !== this.state.visible) return;
+    if (prevState.chap !== this.state.chap) return;
     const newData = this.dataMapper(
       this.props.data,
       "ReleaseDate",
@@ -43,11 +54,10 @@ class Timeline extends Component {
   };
 
   onCarouselChange(a, b, c) {
-    console.log(a, b, c);
-  }
-
-  onOkTextClick() {
-    console.log("hello world!");
+    console.log(a);
+    this.setState({
+      chap: parseInt(a)
+    });
   }
 
   dataMapper(data, xField, yField) {
@@ -241,7 +251,7 @@ class Timeline extends Component {
     return (
       <div>
         <div id="canvas-wrapper">
-          <Trivia />
+          {/* <Trivia /> */}
           {loading ? (
             <div className="loading">
               <br />
@@ -275,13 +285,15 @@ class Timeline extends Component {
               title={<Icon type="home" />}
               visible={this.state.visible}
               centered
-              onOk={this.hideModal}
-              onCancel={this.hideModal}
               footer={[
-                <Button key="submit" loading={loading}>
+                <Button key="back" loading={loading} onClick={this.hideModal}>
                   <Icon type="close-circle" />
                 </Button>,
-                <Button key="back" type="primary" onClick={this.onOkTextClick}>
+                <Button
+                  key="submit"
+                  type="primary"
+                  onClick={() => this.props.preludeHide(this.state.chap)}
+                >
                   <Icon type="caret-right" />
                 </Button>
               ]}
@@ -311,7 +323,7 @@ class Timeline extends Component {
               <br />
               <br />
               <div className="chapter">
-                <Steps current={1} progressDot={customDot}>
+                <Steps current={this.props.progress} progressDot={customDot}>
                   <Step title="Prolog" />
                   <Step title="Chapter 1" />
                   <Step title="Chapter 2" />

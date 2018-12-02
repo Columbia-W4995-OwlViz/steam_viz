@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import * as d3 from "d3";
-import { Spin, Radio, Modal, Button, Select } from "antd";
-import Trivia from "./components/Trivia";
+import { Spin, Radio, Modal, Button, Select, Icon } from "antd";
 import DataModalContent from "./components/DataModalContent";
 import Search from "./search";
 import "./index.css";
@@ -38,6 +37,53 @@ class Main extends Component {
 
   componentDidMount() {
     document.body.style = "background: black;";
+    console.log(this.props.startYear);
+    console.log(this.props.endYear);
+
+    if (this.state.gameSearchValue !== undefined) {
+      // d3.select("body")
+      //   .append("p")
+      //   .html("hello");
+      d3.select("circle#id__" + this.state.gameSearchValue)
+        .attr("opacity", 0.5)
+        .attr("fill", "#ff1919")
+        .transition();
+      let cx = d3.select("circle#id__" + this.state.gameSearchValue).attr("cx");
+      let cy = d3.select("circle#id__" + this.state.gameSearchValue).attr("cy");
+      // tooltip div
+      d3.select("body")
+        .append("div")
+        .html(
+          this.props.dataMap["" + this.state.gameSearchValue]["ResponseName"]
+        )
+        .style("left", cx + "px")
+        .style("top", cy + 10000 + "px")
+        .attr("id", "id__" + this.state.gameSearchValue)
+        .attr("class", "tooltip")
+        .style("opacity", 0.8);
+      console.log(
+        d3.select("div#id__" + this.state.gameSearchValue).attr("opacity")
+      );
+      // .attr("id", "id__" + this.state.gameSearchValue)
+    } else {
+      // div
+      //   .transition()
+      //   .duration(500)
+      //   .style("opacity", 0);
+    }
+
+    const srch = new Search(this.props.data, this.props.dataMap, 25);
+    const bins = this.dataBins(
+      this.props.data,
+      this.state.topFilter,
+      this.state.bottomFilter
+    );
+    this.setState({
+      gameSearch: srch,
+      gameSearchOptions: srch.exec(""),
+      dataBins: bins
+    });
+    this.drawChart(bins, this.props.dataMap);
   }
 
   // shouldComponentUpdate(nextProps, nextState) {
@@ -350,7 +396,6 @@ class Main extends Component {
     return (
       <div>
         <div id="canvas-wrapper">
-          <Trivia />
           {!loading ? (
             <Modal
               className="my-modal"
@@ -374,8 +419,16 @@ class Main extends Component {
           ) : (
             []
           )}
-
+          {/* <div id="home">
+            <Button type="primary" onClick={this.props.preludeShow}>
+              <Icon type="left" />Timeline
+            </Button>
+          </div> */}
           <div id="header">
+            <Button type="primary" onClick={this.props.preludeShow}>
+              <Icon type="left" />
+              Timeline
+            </Button>
             <Select
               className="my-select"
               dropdownClassName="my-dropdown"
