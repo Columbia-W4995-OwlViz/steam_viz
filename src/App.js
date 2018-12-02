@@ -12,7 +12,8 @@ class App extends Component {
   state = {
     data: [],
     dataMap: {},
-    loading: true
+    loading: true,
+    prelude: false
   };
   componentDidMount() {
     d3.csv("steam_game_features.csv", newData => {
@@ -33,8 +34,7 @@ class App extends Component {
         data: refinedData,
         dataMap,
         // uniqueIDs,
-        loading: false,
-        prelude: false
+        loading: false
       });
     });
   }

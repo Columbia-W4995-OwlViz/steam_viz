@@ -4,7 +4,7 @@ export default class Trivia extends Component {
   randomTrivia() {
     var triviaSet = [
       "Rocksmith 2014 has the largest number of DLCs published on Steam.",
-      "The four games with the highest Metacritic scores are Half-Life, Half-Life 2, BioShock, and Grand Theft Auto V.",
+      // "The four games with the highest Metacritic scores are Half-Life, Half-Life 2, BioShock, and Grand Theft Auto V.",
       "Influent has the largest number of packages published on Steam.",
       "Street Fighter V has the largest number of movies published on Steam.",
       "The most expensive title on Game, SolidFace Pro 2013, is actually not a game.",
@@ -17,7 +17,7 @@ export default class Trivia extends Component {
       "The average number of Steam new users per month is 1.5 million.",
       "34% of Steam sales in 2017 come from North America."
     ];
-    var i = Math.round(Math.random() * 13);
+    var i = Math.round(Math.random() * 12);
     return triviaSet[i];
   }
 

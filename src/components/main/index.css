@@ -48,6 +48,13 @@
   color: white;
 }
 
+.ant-select.my-select
+  > .ant-select-selection.ant-select-selection--single
+  > .ant-select-selection__rendered
+  > .ant-select-search {
+  color: white;
+}
+
 .ant-select-dropdown.my-dropdown {
   font-family: "Press Start 2P", cursive;
   font-size: 10px;
@@ -162,7 +169,7 @@
   text-align: center;
   text-transform: uppercase;
   margin-top: 20px;
-  margin-right: 4vw;
+  margin-right: 6.5vw;
   opacity: 0.8;
 }
 

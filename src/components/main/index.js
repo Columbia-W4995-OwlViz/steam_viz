@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import * as d3 from "d3";
-import { Spin, Radio, Input, Modal, Button, Select } from "antd";
+import { Spin, Radio, Modal, Button, Select } from "antd";
 import Trivia from "./components/Trivia";
 import DataModalContent from "./components/DataModalContent";
 import Search from "./search";
@@ -23,7 +23,8 @@ class Main extends Component {
       dataModalID: 10,
       gameSearchValue: undefined,
       gameSearchOptions: [],
-      gameSearch: new Search(props.data, props.dataMap, 25)
+      gameSearch: new Search(props.data, props.dataMap, 25),
+      dataBins: []
     };
     this.handleTopFilter = this.handleTopFilter.bind(this);
     this.handleBottomFilter = this.handleBottomFilter.bind(this);
@@ -56,15 +57,16 @@ class Main extends Component {
     )
       return;
     const srch = new Search(this.props.data, this.props.dataMap, 25);
-    this.setState({
-      gameSearch: srch,
-      gameSearchOptions: srch.exec("")
-    });
     const bins = this.dataBins(
       this.props.data,
       this.state.topFilter,
       this.state.bottomFilter
     );
+    this.setState({
+      gameSearch: srch,
+      gameSearchOptions: srch.exec(""),
+      dataBins: bins
+    });
     this.drawChart(bins, this.props.dataMap);
   }
 
@@ -291,6 +293,10 @@ class Main extends Component {
     });
   }
 
+  // hideSearchBox() {
+  //   document.getElementsByClassName("my-modal").style.display = "none";
+  // }
+
   render() {
     const { loading, data, dataMap } = this.props;
     const { dataModalID } = this.state;
@@ -356,6 +362,7 @@ class Main extends Component {
               <br />
               <Spin size="large" />
               <p id="loading-text">game loading</p>
+              {/* {this.hideSearchBox()} */}
             </div>
           ) : (
             <div id="main-canvas" key={this.state.canvasKey}>
