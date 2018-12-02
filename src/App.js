@@ -18,7 +18,7 @@ class App extends Component {
       prelude: true,
       progress: 0,
       startYear: 1997,
-      endYear: 2002
+      endYear: 2004
     };
     this.preludeShow = this.preludeShow.bind(this);
     this.preludeHide = this.preludeHide.bind(this);
@@ -67,21 +67,21 @@ class App extends Component {
     if (chapter === 0) {
       this.setState({
         startYear: 1997,
-        endYear: 2002
+        endYear: 2004
       });
     } else if (chapter === 1) {
       this.setState({
-        startYear: 2003,
-        endYear: 2008
+        startYear: 2005,
+        endYear: 2012
       });
     } else if (chapter === 2) {
       this.setState({
-        startYear: 2009,
-        endYear: 2014
+        startYear: 2003,
+        endYear: 2018
       });
     } else {
       this.setState({
-        startYear: 2015,
+        startYear: 1997,
         endYear: 2018
       });
     }
