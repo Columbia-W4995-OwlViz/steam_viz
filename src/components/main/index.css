@@ -19,6 +19,25 @@
   opacity: 0.8;
 }
 
+.ant-btn.my-clear-btn {
+  border: 1px solid white;
+  border-radius: 0;
+  color: white;
+  text-transform: uppercase;
+  font-family: "Press Start 2P", cursive;
+  font-size: 12px;
+  background-color: black;
+  margin-top: 20px;
+  margin-left: 55vw;
+}
+
+.ant-btn.my-clear-btn:hover,
+.ant-btn.my-clear-btn:focus {
+  color: black;
+  border: none;
+  background-color: white;
+}
+
 .ant-select.my-select {
   min-width: 30vw;
   width: auto;
@@ -160,7 +179,7 @@
   background-color: #eeeeee;
 }
 .loading .ant-spin {
-  padding-left: 30vw;
+  padding-right: 6vw;
   padding-top: 30vh;
 }
 .loading #loading-text {

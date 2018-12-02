@@ -34,6 +34,7 @@ class Main extends Component {
     this.handleGameSearchChange = this.handleGameSearchChange.bind(this);
     this.handleGameSearchKeyDown = this.handleGameSearchKeyDown.bind(this);
     this.handleGameSearchSearch = this.handleGameSearchSearch.bind(this);
+    this.handleClear = this.handleClear.bind(this);
   }
 
   componentDidMount() {
@@ -42,6 +43,11 @@ class Main extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (!this.props.data) return;
+    if (this.state.gameSearchValue === undefined) {
+      d3.select("#tooltip_gamesearch")
+        .style("opacity", 0)
+        .transition();
+    }
     if (prevState.gameSearchValue !== undefined) {
       d3.select("circle#circle_id__" + prevState.gameSearchValue)
         .attr("opacity", 0.5)
@@ -260,10 +266,14 @@ class Main extends Component {
           .transition()
           .duration(200)
           .style("opacity", 0.8);
+        let matrix = this.getScreenCTM().translate(
+          +this.getAttribute("cx"),
+          +this.getAttribute("cy")
+        );
         div
           .html(dataMap[d.id]["ResponseName"])
-          .style("left", d3.event.pageX - 100 + "px")
-          .style("top", d3.event.pageY + 20 + "px");
+          .style("left", window.pageXOffset + matrix.e - 100 + "px")
+          .style("top", window.pageYOffset + matrix.f + 20 + "px");
       })
       .on("mouseout", function(d) {
         d3.select(this)
@@ -342,6 +352,13 @@ class Main extends Component {
   //   document.getElementsByClassName("my-modal").style.display = "none";
   // }
 
+  handleClear(e) {
+    this.setState({
+      gameSearchValue: undefined,
+      gameSearchOptions: this.state.gameSearch.exec("")
+    });
+  }
+
   render() {
     const { loading, data, dataMap } = this.props;
     const { dataModalID } = this.state;
@@ -378,6 +395,9 @@ class Main extends Component {
           )}
 
           <div id="header">
+            <Button className="my-clear-btn" onClick={this.handleClear}>
+              Clear
+            </Button>
             <Select
               className="my-select"
               dropdownClassName="my-dropdown"
@@ -411,7 +431,6 @@ class Main extends Component {
             </div>
           ) : (
             <div id="main-canvas" key={this.state.canvasKey}>
-              {/* <svg id="main_svg" viewBox="-50 -100 1600 1000" /> */}
               <svg id="main_svg" viewBox="-100 -100 1700 650" />
             </div>
           )}
