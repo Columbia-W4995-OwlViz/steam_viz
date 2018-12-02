@@ -2,7 +2,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## References and Sources
 
-http://bl.ocks.org/nnattawat/8916402
+http://bl.ocks.org/nnattawat/8916402  
+http://bl.ocks.org/d3noob/a22c42db65eb00d4e369
 
 ## Available Scripts
 

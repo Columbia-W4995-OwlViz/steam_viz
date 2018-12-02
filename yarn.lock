@@ -743,9 +743,9 @@
   dependencies:
     d3-scale "^2.0.0"
 
-"@vx/shape@^0.0.179":
-  version "0.0.179"
-  resolved "https://registry.yarnpkg.com/@vx/shape/-/shape-0.0.179.tgz#038c449743d1e05b7b2d20151e9ab6e739f73516"
+"@vx/shape@^0.0.181":
+  version "0.0.181"
+  resolved "https://registry.yarnpkg.com/@vx/shape/-/shape-0.0.181.tgz#78b11e051994acb3e03a35bb3c53a8774d9587ca"
   dependencies:
     "@vx/curve" "0.0.165"
     "@vx/group" "0.0.170"

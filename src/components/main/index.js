@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import * as d3 from "d3";
-import { Spin, Radio } from "antd";
-import { Input } from "antd";
-
+import { Spin, Radio, Input, Modal, Button, Select } from "antd";
 import Trivia from "./components/Trivia";
+import DataModalContent from "./components/DataModalContent";
+import Search from "./search";
 import "./index.css";
 
+const Option = Select.Option;
 class Main extends Component {
   constructor(props) {
     super(props);
@@ -17,28 +18,54 @@ class Main extends Component {
       },
       topFilter: "RecommendationCount",
       bottomFilter: "SteamSpyOwners",
-      canvasKey: 1
+      canvasKey: 1,
+      showDataModal: false,
+      dataModalID: 10,
+      gameSearchValue: undefined,
+      gameSearchOptions: [],
+      gameSearch: new Search(props.data, props.dataMap, 25)
     };
     this.handleTopFilter = this.handleTopFilter.bind(this);
     this.handleBottomFilter = this.handleBottomFilter.bind(this);
+    this.drawChart = this.drawChart.bind(this);
+    this.handleModalClick = this.handleModalClick.bind(this);
+    this.handleGameSearchSelect = this.handleGameSearchSelect.bind(this);
+    this.handleGameSearchChange = this.handleGameSearchChange.bind(this);
+    this.handleGameSearchKeyDown = this.handleGameSearchKeyDown.bind(this);
+    this.handleGameSearchSearch = this.handleGameSearchSearch.bind(this);
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    document.body.style = "background: black;";
+  }
 
   // shouldComponentUpdate(nextProps, nextState) {
-  //   if (nextProps.data !== this.props.data) return true;
-  //   if (nextState.canvasKey === this.state.canvasKey) return false;
+  //   // if (
+  //   //   this.props.loading === nextProps.loading &&
+  //   //   this.state.canvasKey === nextState.canvasKey
+  //   // )
+  //   //   return false;
+  //   return true;
   // }
 
   componentDidUpdate(prevProps, prevState) {
     if (!this.props.data) return;
-
+    if (
+      prevProps.loading === this.props.loading &&
+      prevState.canvasKey === this.state.canvasKey
+    )
+      return;
+    const srch = new Search(this.props.data, this.props.dataMap, 25);
+    this.setState({
+      gameSearch: srch,
+      gameSearchOptions: srch.exec("")
+    });
     const bins = this.dataBins(
       this.props.data,
       this.state.topFilter,
       this.state.bottomFilter
     );
-    this.drawChart(bins);
+    this.drawChart(bins, this.props.dataMap);
   }
 
   //field: RecommendationCount
@@ -73,12 +100,12 @@ class Main extends Component {
   /*
    * https://beta.observablehq.com/@baspieren/functional-programming-d3-scatterplot
    */
-  drawChart(bins) {
+  drawChart(bins, dataMap) {
     bins = bins.filter(record => record.y < 8000000);
     //ACCESS this.state.data
     const svg = d3.select("#main_svg").datum(bins);
     const width = 1600;
-    const height = 800;
+    const height = 500;
     const margin = { top: 100, right: 100, bottom: 100, left: 100 };
 
     const x = d3
@@ -114,29 +141,55 @@ class Main extends Component {
           .tickPadding(10)
       );
 
-    const dotColor = d3
-      .scaleLinear()
-      .domain([
-        0,
-        d3.median(bins, d => parseInt(d.y)),
-        d3.max(bins, d => parseInt(d.y))
-      ])
-      .nice()
-      .range(["orange", "white", "steelblue"]);
+    // const dotColor = d3
+    //   .scaleLinear()
+    //   .domain([
+    //     0,
+    //     d3.median(bins, d => parseInt(d.y)),
+    //     d3.max(bins, d => parseInt(d.y))
+    //   ])
+    //   .nice()
+    //   .range(["orange", "white", "steelblue"]);
 
+    // x-axis
     svg
       .append("g")
       .call(xAxis)
       .attr("stroke-width", 2)
       .attr("color", "white")
-      .style("font-size", "14px");
+      .style("font-size", "8px")
+      .style("font-family", "'Press Start 2P', cursive");
 
+    // x-axis label
+    svg
+      .append("text")
+      .attr("x", (margin.left + width - margin.right) / 2 - 55)
+      .attr("y", height - 10)
+      .text(this.state.topFilter)
+      .style("font-family", "'Press Start 2P', cursive")
+      .style("fill", "white")
+      .attr("text-anchor", "middle");
+
+    // y-axis
     svg
       .append("g")
       .call(yAxis)
+      .attr("stroke-width", 2)
       .attr("color", "white")
-      .style("font-size", "14px");
+      .style("font-size", "8px")
+      .style("font-family", "'Press Start 2P', cursive");
 
+    // y-axis label
+    svg
+      .append("text")
+      .attr("x", -height / 2 - 80)
+      .attr("y", margin.left / 2 - 95)
+      .text(this.state.bottomFilter)
+      .attr("transform", "rotate(-90)")
+      .style("font-family", "'Press Start 2P', cursive")
+      .style("fill", "white");
+
+    // data points
     svg
       .append("g")
       .selectAll("circle")
@@ -146,22 +199,51 @@ class Main extends Component {
       .attr("cx", d => x(d.name))
       .attr("cy", d => y(parseInt(d.y)))
       .attr("r", 8)
-      .attr("fill", d => dotColor(parseInt(d.y)))
-      .attr("opacity", 0.5);
-    // // START USE OF SOURCE: Martijn Reeuwijk
-    // .on("mouseover", function(d) {
-    //   d3.select(this)
-    //     .attr("circle", 10)
-    //     .transition()
-    //     .attr("fill", "#2d2d2d");
-    // })
-    // .on("mouseout", function(d) {
-    //   d3.select(this)
-    //     .attr("circle", 10)
-    //     .transition()
-    //     .attr("fill", dotColor(d.pages));
-    // });
+      // .attr("fill", d => dotColor(parseInt(d.y)))
+      .attr("fill", "white")
+      .attr("opacity", 0.5)
+      // START USE OF SOURCE: Martijn Reeuwijk
+      .on("mouseover", function(d) {
+        d3.select(this)
+          // .attr("r", 10)
+          .attr("opacity", 0.5)
+          .attr("fill", "#ff1919")
+          .transition();
+        div
+          .transition()
+          .duration(200)
+          .style("opacity", 0.8);
+        div
+          .html(dataMap[d.id]["ResponseName"])
+          .style("left", d3.event.pageX - 100 + "px")
+          .style("top", d3.event.pageY + 20 + "px");
+      })
+      .on("mouseout", function(d) {
+        d3.select(this)
+          .attr("r", 8)
+          .attr("opacity", 0.5)
+          // .attr("fill", d => dotColor(parseInt(d.y)))
+          .attr("fill", "white")
+          .transition();
+        div
+          .transition()
+          .duration(500)
+          .style("opacity", 0);
+      })
+      .on("mousedown", d => {
+        this.setState({
+          showDataModal: true,
+          dataModalID: d.id
+        });
+      });
     // END USE OF SOURCE
+
+    // tooltip div
+    var div = d3
+      .select("body")
+      .append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
   }
 
   handleTopFilter(e) {
@@ -178,26 +260,112 @@ class Main extends Component {
     });
   }
 
+  handleModalClick(e) {
+    this.setState({
+      showDataModal: false
+    });
+  }
+
+  handleGameSearchSelect(value) {
+    this.setState({
+      gameSearchValue: value
+    });
+  }
+
+  handleGameSearchChange(value) {}
+  handleGameSearchKeyDown(e) {
+    // if (e.keyCode !== 13) return;
+    // this.setState({
+    //   gameSearchValue: this.state.gameSearchOptions[0]
+    //     ? this.state.gameSearchOptions[0]
+    //     : undefined
+    // });
+  }
+
+  handleGameSearchSearch(value) {
+    const localOptions = this.state.gameSearch.exec(value);
+    this.setState({
+      gameSearchOptions: localOptions,
+      gameSearchValue:
+        localOptions && localOptions.length ? localOptions[0] : undefined
+    });
+  }
+
   render() {
-    const { loading } = this.props;
+    const { loading, data, dataMap } = this.props;
+    const { dataModalID } = this.state;
+    const { gameSearchOptions } = this.state;
+    const options = gameSearchOptions.map(uid => (
+      <Option key={uid}>{dataMap[uid].ResponseName}</Option>
+    ));
     return (
       <div>
         <div id="canvas-wrapper">
           <Trivia />
+          {!loading ? (
+            <Modal
+              className="my-modal"
+              title={dataMap[dataModalID]["ResponseName"]}
+              visible={this.state.showDataModal}
+              onOk={this.handleModalClick}
+              onCancel={this.handleModalClick}
+              footer={[
+                <Button key="ok" type="primary" onClick={this.handleModalClick}>
+                  OK
+                </Button>
+              ]}
+            >
+              <DataModalContent
+                loading={loading}
+                data={data}
+                dataMap={dataMap}
+                dataID={dataModalID}
+              />
+            </Modal>
+          ) : (
+            []
+          )}
+
           <div id="header">
-            <Input className="my-input" placeholder="Enter another game..." />
+            <Select
+              className="my-select"
+              dropdownClassName="my-dropdown"
+              showSearch
+              autoFocus={true}
+              value={this.state.gameSearchValue}
+              placeholder={"Enter another game..."}
+              defaultActiveFirstOption={true}
+              showArrow={false}
+              // filterOption={(iv, opt) => {
+              //   return opt.props.children.match(new RegExp(iv, "i"));
+              // }}
+              filterOption={false}
+              onSelect={this.handleGameSearchSelect}
+              onInputKeyDown={this.handleGameSearchKeyDown}
+              onChange={this.handleGameSearchChange}
+              onSearch={this.handleGameSearchSearch}
+              notFoundContent={null}
+            >
+              {options}
+            </Select>
+            {/* <Input className="my-input" placeholder="Enter another game..." /> */}
           </div>
           {loading ? (
             <div className="loading">
               <br />
               <br />
               <Spin size="large" />
+              <p id="loading-text">game loading</p>
             </div>
           ) : (
             <div id="main-canvas" key={this.state.canvasKey}>
-              <svg id="main_svg" viewBox="-50 -100 1600 1000" />
+              {/* <svg id="main_svg" viewBox="-50 -100 1600 1000" /> */}
+              <svg id="main_svg" viewBox="-100 -100 1700 650" />
             </div>
           )}
+          <div id="xlabel">
+            {document.getElementsByClassName("my-btn-group").value}
+          </div>
           <div id="yfilter">
             <Radio.Group
               value={this.state.topFilter}
