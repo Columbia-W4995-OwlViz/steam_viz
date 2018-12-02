@@ -27,8 +27,8 @@
   font-family: "Press Start 2P", cursive;
   font-size: 12px;
   background-color: black;
-  margin-top: 20px;
-  margin-right: 40vw;
+  margin-top: 30px;
+  margin-right: 50vw;
 }
 
 .ant-btn.my-clear-btn:hover,
@@ -57,8 +57,7 @@
 }
 
 .ant-select.my-select {
-  min-width: 30vw;
-  width: auto;
+  width: 400px;
   float: right;
   font-family: "Press Start 2P", cursive;
   font-size: 12px;
@@ -197,6 +196,7 @@
   background-color: #eeeeee;
 }
 .loading .ant-spin {
+  /* padding-left: 28vw; */
   padding-right: 6vw;
   padding-top: 30vh;
 }

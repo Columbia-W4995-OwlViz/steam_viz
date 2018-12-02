@@ -401,8 +401,7 @@ class Main extends Component {
               className="my-clear-btn"
               onClick={this.handleClear}
               style={{
-                display:
-                  this.state.gameSearchValue !== undefined ? "inline" : "none"
+                opacity: this.state.gameSearchValue !== undefined ? 1 : 0
               }}
             >
               Clear
