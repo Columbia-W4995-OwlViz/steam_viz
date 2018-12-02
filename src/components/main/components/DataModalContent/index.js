@@ -5,7 +5,6 @@ export default class DataModalContent extends Component {
   render() {
     const { dataID, dataMap } = this.props;
     const pieceData = dataMap[dataID];
-    console.log(pieceData);
     return (
       <div className="DataModalContent__container">
         <p>Release Date: {pieceData.ReleaseDate}</p>

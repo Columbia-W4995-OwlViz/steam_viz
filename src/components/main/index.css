@@ -1,7 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Press+Start+2P");
 
 #main-canvas {
-  /* background-color: black; */
 }
 
 #yfilter {
@@ -9,7 +8,7 @@
 }
 
 #main_svg {
-  padding: 10px 0px;
+  padding: 10px 10px;
 }
 
 #trivia,
@@ -17,6 +16,43 @@
   color: white;
   font-family: "Press Start 2P", cursive;
   font-size: 10px;
+  opacity: 0.8;
+}
+
+.ant-select.my-select {
+  min-width: 30vw;
+  width: auto;
+  float: right;
+  font-family: "Press Start 2P", cursive;
+  font-size: 12px;
+  background-color: black;
+  border-color: white;
+  color: white;
+  margin-top: 20px;
+  margin-right: 60px;
+  transition: box-shadow 0.3s;
+}
+
+.ant-select.my-select:hover {
+  border-color: white;
+  box-shadow: 2px 2px white;
+}
+
+.ant-select.my-select > .ant-select-selection.ant-select-selection--single {
+  border: 1px solid white;
+  border-radius: 0px !important;
+  font-family: "Press Start 2P", cursive;
+  font-size: 12px;
+  background-color: black;
+  border-color: white;
+  color: white;
+}
+
+.ant-select-dropdown.my-dropdown {
+  font-family: "Press Start 2P", cursive;
+  font-size: 10px;
+  border-radius: 0px;
+  opacity: 0.8;
 }
 
 .ant-input.my-input {
@@ -52,6 +88,7 @@
   background-color: black;
   color: white;
   border-color: white;
+  transition: color 0.3s, background-color 0.3s, border-color 0.3s;
 }
 
 .ant-radio-button-wrapper.my-btn:hover,
@@ -108,9 +145,25 @@
 
 .loading {
   margin: auto;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
 }
 .loading .ant-spin-dot i {
   background-color: #eeeeee;
+}
+.loading .ant-spin {
+  padding-left: 30vw;
+  padding-top: 30vh;
+}
+.loading #loading-text {
+  color: white;
+  font-family: "Press Start 2P", cursive;
+  text-align: center;
+  text-transform: uppercase;
+  margin-top: 20px;
+  margin-right: 4vw;
+  opacity: 0.8;
 }
 
 div.tooltip {
@@ -159,10 +212,16 @@ div.tooltip {
 }
 
 .ant-modal.my-modal > .ant-modal-content > .ant-modal-footer > .ant-btn {
+  background-color: black;
+  color: white;
+  border: 1px solid white;
+  border-radius: 0px;
+  transition: background-color 0.3s color 0.3s;
+}
+
+.ant-modal.my-modal > .ant-modal-content > .ant-modal-footer > .ant-btn:hover {
   background-color: white;
   color: black;
-  border: none;
-  border-radius: 1px;
 }
 
 .ant-modal.my-modal > .ant-modal-content > .ant-modal-close {
@@ -170,6 +229,7 @@ div.tooltip {
 }
 
 .my-modal-header-img {
-  width: 40vw;
+  width: 46.2vw;
   height: auto;
+  border: 1px solid lightgrey;
 }

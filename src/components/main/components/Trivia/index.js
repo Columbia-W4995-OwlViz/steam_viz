@@ -7,11 +7,17 @@ export default class Trivia extends Component {
       "The four games with the highest Metacritic scores are Half-Life, Half-Life 2, BioShock, and Grand Theft Auto V.",
       "Influent has the largest number of packages published on Steam.",
       "Street Fighter V has the largest number of movies published on Steam.",
-      "The most expensive tilte on Game, SolidFace Pro 2013, is actually not a game.",
+      "The most expensive title on Game, SolidFace Pro 2013, is actually not a game.",
       "You can earn the greatest number of achievements in Maj'Eyal.",
-      "Assetto Corsa has the largest number of screeshots published on Steam."
+      "Assetto Corsa has the largest number of screeshots published on Steam.",
+      "Steam has different prices for different regions.",
+      "Steam sells software, too.",
+      "Steam has 67 million active monthly players.",
+      "The number of active daily users on Steam is 33 million.",
+      "The average number of Steam new users per month is 1.5 million.",
+      "34% of Steam sales in 2017 come from North America."
     ];
-    var i = Math.round(Math.random() * 7);
+    var i = Math.round(Math.random() * 13);
     return triviaSet[i];
   }
 
@@ -31,6 +37,17 @@ export default class Trivia extends Component {
   render() {
     return (
       <div>
+        <p
+          style={{
+            color: "white",
+            "text-align": "center",
+            "font-family": "'Press Start 2P',cursive",
+            "font-size": "10px",
+            opacity: "0.8"
+          }}
+        >
+          DID YOU KNOW
+        </p>
         <h3 id="trivia">{this.state.trivia}</h3>
       </div>
     );

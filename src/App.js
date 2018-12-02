@@ -1,14 +1,13 @@
 import React, { Component } from "react";
-import { Button } from "antd";
 
-import { Layout, Menu, Icon } from "antd";
+import { Layout, Select } from "antd";
 import * as d3 from "d3";
 import Main from "./components/main";
 import Timeline from "./components/timeline";
-import logo from "./logo.svg";
 import "./App.css";
-const { Header, Content, Footer, Sider } = Layout;
+const { Content } = Layout;
 
+const { Option } = Select;
 class App extends Component {
   state = {
     data: [],
@@ -24,9 +23,16 @@ class App extends Component {
       data.forEach(e => {
         dataMap[e.QueryID] = e;
       });
+      let uniqueIDs = new Set();
+      data.forEach(d => {
+        uniqueIDs.add(d.QueryID);
+      });
+      const refinedData = Array.from(uniqueIDs).map(uid => dataMap[uid]);
+      // console.log(refinedData);
       this.setState({
-        data,
+        data: refinedData,
         dataMap,
+        // uniqueIDs,
         loading: false,
         prelude: false
       });
@@ -62,6 +68,7 @@ class App extends Component {
                     data={this.state.data}
                     dataMap={this.state.dataMap}
                     loading={this.state.loading}
+                    // uniqueIDs={this.state.uniqueIDs}
                   />
                 )}
               </div>
