@@ -239,4 +239,6 @@ div.tooltip {
   width: 46.2vw;
   height: auto;
   border: 1px solid lightgrey;
+  margin: auto !important;
+  display: block;
 }

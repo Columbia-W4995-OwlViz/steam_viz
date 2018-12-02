@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import "./index.css";
 
 export default class Trivia extends Component {
   randomTrivia() {
@@ -37,17 +38,7 @@ export default class Trivia extends Component {
   render() {
     return (
       <div>
-        <p
-          style={{
-            color: "white",
-            "text-align": "center",
-            "font-family": "'Press Start 2P',cursive",
-            "font-size": "10px",
-            opacity: "0.8"
-          }}
-        >
-          DID YOU KNOW
-        </p>
+        <p>DID YOU KNOW</p>
         <h3 id="trivia">{this.state.trivia}</h3>
       </div>
     );

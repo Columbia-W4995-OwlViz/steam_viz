@@ -24,7 +24,7 @@ class Main extends Component {
       gameSearchValue: undefined,
       gameSearchOptions: [],
       gameSearch: new Search(props.data, props.dataMap, 25),
-      dataBins: []
+      dataBinsMap: {}
     };
     this.handleTopFilter = this.handleTopFilter.bind(this);
     this.handleBottomFilter = this.handleBottomFilter.bind(this);
@@ -51,6 +51,40 @@ class Main extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (!this.props.data) return;
+
+    if (this.state.gameSearchValue !== undefined) {
+      // d3.select("body")
+      //   .append("p")
+      //   .html("hello");
+      d3.select("circle#id__" + this.state.gameSearchValue)
+        .attr("opacity", 0.5)
+        .attr("fill", "#ff1919")
+        .transition();
+      let cx = d3.select("circle#id__" + this.state.gameSearchValue).attr("cx");
+      let cy = d3.select("circle#id__" + this.state.gameSearchValue).attr("cy");
+      // tooltip div
+      d3.select("body")
+        .append("div")
+        .html(
+          this.props.dataMap["" + this.state.gameSearchValue]["ResponseName"]
+        )
+        .style("left", cx + "px")
+        .style("top", cy + 10000 + "px")
+        .attr("id", "id__" + this.state.gameSearchValue)
+        .attr("class", "tooltip")
+        .style("opacity", 0.8);
+      console.log(
+        d3.select("div#id__" + this.state.gameSearchValue).attr("opacity")
+      );
+      // .attr("id", "id__" + this.state.gameSearchValue)
+    } else {
+      // div
+      //   .transition()
+      //   .duration(500)
+      //   .style("opacity", 0);
+    }
+
+    //init or redraw everything, BE CAREFUL
     if (
       prevProps.loading === this.props.loading &&
       prevState.canvasKey === this.state.canvasKey
@@ -83,9 +117,14 @@ class Main extends Component {
     let histogram = d3.histogram().thresholds(this.state.binThreshold[xField]);
     let bins = histogram(x);
     let joinBins = [];
+    let dataBinsMap = {};
     data.forEach(record => {
       bins.forEach((item, i) => {
         if (record[xField] >= item.x0 && record[xField] < item.x1) {
+          dataBinsMap[record.QueryID] = {
+            dataBinName: item.x1.toString(),
+            dataBinY: parseInt(record[yField])
+          };
           joinBins.push({
             id: record["QueryID"],
             name: item.x1.toString(),
@@ -96,6 +135,9 @@ class Main extends Component {
       });
     });
     // console.log(joinBins);
+    this.setState({
+      dataBinsMap
+    });
     return joinBins;
   }
 
@@ -198,6 +240,7 @@ class Main extends Component {
       .data(bins)
       .enter()
       .append("circle")
+      .attr("id", d => "id__" + d.id)
       .attr("cx", d => x(d.name))
       .attr("cy", d => y(parseInt(d.y)))
       .attr("r", 8)
@@ -287,9 +330,9 @@ class Main extends Component {
   handleGameSearchSearch(value) {
     const localOptions = this.state.gameSearch.exec(value);
     this.setState({
-      gameSearchOptions: localOptions,
-      gameSearchValue:
-        localOptions && localOptions.length ? localOptions[0] : undefined
+      gameSearchOptions: localOptions
+      // gameSearchValue:
+      //   localOptions && localOptions.length ? localOptions[0] : undefined
     });
   }
 
