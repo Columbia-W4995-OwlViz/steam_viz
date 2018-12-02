@@ -40,48 +40,50 @@ class Main extends Component {
     document.body.style = "background: black;";
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   // if (
-  //   //   this.props.loading === nextProps.loading &&
-  //   //   this.state.canvasKey === nextState.canvasKey
-  //   // )
-  //   //   return false;
-  //   return true;
-  // }
-
   componentDidUpdate(prevProps, prevState) {
     if (!this.props.data) return;
+    if (prevState.gameSearchValue !== undefined) {
+      d3.select("circle#circle_id__" + prevState.gameSearchValue)
+        .attr("opacity", 0.5)
+        .attr("fill", "white")
+        .transition();
+    }
 
     if (this.state.gameSearchValue !== undefined) {
-      // d3.select("body")
-      //   .append("p")
-      //   .html("hello");
-      d3.select("circle#id__" + this.state.gameSearchValue)
+      d3.select("circle#circle_id__" + this.state.gameSearchValue)
         .attr("opacity", 0.5)
         .attr("fill", "#ff1919")
         .transition();
-      let cx = d3.select("circle#id__" + this.state.gameSearchValue).attr("cx");
-      let cy = d3.select("circle#id__" + this.state.gameSearchValue).attr("cy");
-      // tooltip div
-      d3.select("body")
-        .append("div")
-        .html(
-          this.props.dataMap["" + this.state.gameSearchValue]["ResponseName"]
-        )
-        .style("left", cx + "px")
-        .style("top", cy + 10000 + "px")
-        .attr("id", "id__" + this.state.gameSearchValue)
-        .attr("class", "tooltip")
-        .style("opacity", 0.8);
-      console.log(
-        d3.select("div#id__" + this.state.gameSearchValue).attr("opacity")
+      let c = document.getElementById(
+        "circle_id__" + this.state.gameSearchValue
       );
-      // .attr("id", "id__" + this.state.gameSearchValue)
-    } else {
-      // div
-      //   .transition()
-      //   .duration(500)
-      //   .style("opacity", 0);
+      let matrix = c
+        .getScreenCTM()
+        .translate(+c.getAttribute("cx"), +c.getAttribute("cy"));
+
+      let tooltip = d3.select("#tooltip_gamesearch");
+      if (tooltip.empty()) {
+        d3.select("body")
+          .append("div")
+          .html(
+            this.props.dataMap["" + this.state.gameSearchValue]["ResponseName"]
+          )
+          .style("left", window.pageXOffset + matrix.e - 100 + "px")
+          .style("top", window.pageYOffset + matrix.f + 20 + "px")
+          .attr("id", "tooltip_gamesearch")
+          .attr("class", "tooltip")
+          .style("opacity", 0.8);
+      } else {
+        tooltip
+          .html(
+            this.props.dataMap["" + this.state.gameSearchValue]["ResponseName"]
+          )
+          .style("left", window.pageXOffset + matrix.e - 100 + "px")
+          .style("top", window.pageYOffset + matrix.f + 20 + "px")
+          .attr("id", "tooltip_gamesearch")
+          .attr("class", "tooltip")
+          .style("opacity", 0.8);
+      }
     }
 
     //init or redraw everything, BE CAREFUL
@@ -240,7 +242,7 @@ class Main extends Component {
       .data(bins)
       .enter()
       .append("circle")
-      .attr("id", d => "id__" + d.id)
+      .attr("id", d => "circle_id__" + d.id)
       .attr("cx", d => x(d.name))
       .attr("cy", d => y(parseInt(d.y)))
       .attr("r", 8)
