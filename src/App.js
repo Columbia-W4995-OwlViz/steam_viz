@@ -7,7 +7,6 @@ import Timeline from "./components/timeline";
 import "./App.css";
 const { Content } = Layout;
 
-const { Option } = Select;
 class App extends Component {
   state = {
     data: [],
@@ -29,6 +28,7 @@ class App extends Component {
         uniqueIDs.add(d.QueryID);
       });
       const refinedData = Array.from(uniqueIDs).map(uid => dataMap[uid]);
+      // const filteredData = refinedData.filter();
       // console.log(refinedData);
       this.setState({
         data: refinedData,
