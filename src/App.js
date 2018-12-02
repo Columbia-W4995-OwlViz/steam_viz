@@ -12,7 +12,7 @@ const { Header, Content, Footer, Sider } = Layout;
 class App extends Component {
   state = {
     data: [],
-    loading: true
+    loading: false
   };
   componentDidMount() {
     d3.csv("steam_game_features.csv", newData => {

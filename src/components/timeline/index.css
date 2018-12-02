@@ -4,7 +4,8 @@
   padding: 10px 0px;
 }
 
-#trivia {
+#trivia,
+#trivia-sec {
   color: white;
   font-family: "Press Start 2P", cursive;
   font-size: 10px;
@@ -101,4 +102,21 @@
 }
 .loading .ant-spin-dot i {
   background-color: #eeeeee;
+}
+
+.ant-carousel .slick-slide {
+  text-align: center;
+  height: 360px;
+  line-height: 360px;
+  background: #364d79;
+  overflow: hidden;
+}
+
+.ant-carousel .slick-slide h3 {
+  color: #fff;
+}
+
+.ant-modal.my-modal {
+  width: 60vw !important;
+  height: auto;
 }
