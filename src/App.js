@@ -13,7 +13,7 @@ class App extends Component {
     data: [],
     dataMap: {},
     loading: true,
-    prelude: false
+    prelude: true
   };
   componentDidMount() {
     d3.csv("steam_game_features.csv", newData => {

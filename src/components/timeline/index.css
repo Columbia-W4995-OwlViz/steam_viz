@@ -2,6 +2,12 @@
 
 #timeline_svg {
   padding: 10px 0px;
+  opacity: 0.4;
+  height: auto;
+}
+
+div h1 {
+  font-family: "Press Start 2P", cursive;
 }
 
 #trivia,
@@ -108,7 +114,7 @@
   text-align: center;
   height: 360px;
   line-height: 360px;
-  background: #364d79;
+  background: grey;
   overflow: hidden;
 }
 
@@ -119,4 +125,71 @@
 .ant-modal.my-modal {
   width: 60vw !important;
   height: auto;
+}
+
+/* .ant-modal.my-modal > .ant-modal-content > .chapter > .ant-steps > .ant-steps-item > .ant-steps-item-tail {
+  background-color: white !important;
+  color: white;
+}
+
+.ant-modal.my-modal > .ant-modal-content > .chapter > .ant-steps > .ant-steps-item > .ant-steps-item-icon > .ant-steps-icon > .ant-steps-icon-dot {
+  background-color: white;
+  color: white !important; 
+} */
+
+.anticon.my-icon {
+  cursor: pointer;
+}
+
+.ant-btn.modal-btn {
+  border: 2px solid white !important;
+  background-color: black;
+  color: white;
+  font-family: "Press Start 2P", cursive;
+  text-transform: uppercase;
+  font-size: 20px;
+  padding-bottom: 5px;
+  margin: 0px 5px;
+  height: auto;
+  transition: color 0.5s, background-color 0.5s, border 0.3s;
+}
+
+.ant-btn.modal-btn:hover {
+  color: black;
+  background-color: white;
+  border: white;
+}
+
+#canvas-wrapper {
+  position: relative;
+  height: auto;
+}
+
+#enter {
+  position: absolute;
+  width: 50vw;
+  height: 100%;
+  top: 50vh;
+  left: 25vw;
+}
+
+.ant-btn.my-btn {
+  border-radius: 0;
+  border: 2px solid white;
+  background-color: black;
+  color: white;
+  font-family: "Press Start 2P", cursive;
+  text-transform: uppercase;
+  font-size: 20px;
+  padding: 10px 10px;
+  height: auto;
+  width: 25vw;
+  transition: color 0.5s, background-color 0.5s, border 0.3s;
+}
+
+.ant-btn.my-btn:hover,
+.ant-btn.my-btn:focus {
+  color: black;
+  background-color: white;
+  border: white;
 }

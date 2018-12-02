@@ -18,6 +18,9 @@ class Timeline extends Component {
     this.onCarouselChange = this.onCarouselChange.bind(this);
     this.onOkTextClick = this.onOkTextClick.bind(this);
   }
+  componentDidMount() {
+    document.body.style = "background: black;";
+  }
 
   componentDidUpdate(prevProps, prevState) {
     if (!this.props.data) return;
@@ -125,7 +128,7 @@ class Timeline extends Component {
             .attr("y", -5)
             .attr("text-anchor", "start")
             .attr("font-weight", "bold")
-            .attr("font-size", "16px")
+            .attr("font-size", "12px")
             .text("Year")
         );
 
@@ -147,7 +150,7 @@ class Timeline extends Component {
             .attr("y", -25)
             .attr("text-anchor", "middle")
             .attr("font-weight", "bold")
-            .attr("font-size", "16px")
+            .attr("font-size", "12px")
             .text("Number of Owners")
         );
 
@@ -183,17 +186,17 @@ class Timeline extends Component {
       .append("g")
       .call(xAxis)
       .attr("stroke-width", 2)
-      .attr("font-weight", "bold")
       .attr("color", "white")
-      .style("font-size", "14px");
+      .style("font-size", "8px")
+      .style("font-family", "'Press Start 2P', cursive");
 
     svg
       .append("g")
       .call(yAxis)
       .attr("stroke-width", 2)
-      .attr("font-weight", "bold")
       .attr("color", "white")
-      .style("font-size", "14px");
+      .style("font-size", "8px")
+      .style("font-family", "'Press Start 2P', cursive");
 
     // svg
     //   .append("g")
@@ -220,7 +223,8 @@ class Timeline extends Component {
       .attr("cx", d => x(parseInt(d.x)))
       .attr("cy", d => y(parseInt(d.y)))
       .attr("r", 8)
-      .attr("fill", d => dotColor(parseInt(d.y)))
+      // .attr("fill", d => dotColor(parseInt(d.y)))
+      .attr("fill", "white")
       .attr("opacity", 0.5);
   }
 
@@ -252,7 +256,7 @@ class Timeline extends Component {
             <svg id="timeline_svg" viewBox="-50 -100 1600 800" />
           )}
           <div id="enter">
-            <Button block onClick={this.showModal}>
+            <Button className="my-btn" block onClick={this.showModal}>
               Enter Game
             </Button>
             {/* <Radio.Group
@@ -272,16 +276,21 @@ class Timeline extends Component {
             </Radio.Group> */}
             <Modal
               className="my-modal"
-              title={<Icon type="home" />}
+              title={<Icon className="my-icon" type="home" />}
               visible={this.state.visible}
               centered
               onOk={this.hideModal}
               onCancel={this.hideModal}
               footer={[
-                <Button key="submit" loading={loading}>
+                <Button className="modal-btn" key="submit" loading={loading}>
                   <Icon type="close-circle" />
                 </Button>,
-                <Button key="back" type="primary" onClick={this.onOkTextClick}>
+                <Button
+                  className="modal-btn"
+                  key="back"
+                  type="primary"
+                  onClick={this.onOkTextClick}
+                >
                   <Icon type="caret-right" />
                 </Button>
               ]}
