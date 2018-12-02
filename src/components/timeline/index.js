@@ -310,22 +310,22 @@ class Timeline extends Component {
               <Carousel afterChange={this.onCarouselChange}>
                 <div>
                   <h1>
-                    Prolog: <strong>1997 - 2002</strong>
+                    Prolog: <strong>1997 - 2004</strong>
                   </h1>
                 </div>
                 <div>
                   <h1>
-                    Chapter 1: <strong>2003 - 2008</strong>
+                    Chapter 1: <strong>2005 - 2012</strong>
                   </h1>
                 </div>
                 <div>
                   <h1>
-                    Chapter 2: <strong>2009 - 2014</strong>
+                    Chapter 2: <strong>2013 - 2018</strong>
                   </h1>
                 </div>
                 <div>
                   <h1>
-                    Epilog: <strong>2015 - 2018</strong>
+                    Epilog: <strong>1997 - 2018</strong>
                   </h1>
                 </div>
               </Carousel>
