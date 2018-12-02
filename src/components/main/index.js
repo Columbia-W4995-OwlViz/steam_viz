@@ -7,6 +7,11 @@ import Search from "./search";
 import "./index.css";
 
 const Option = Select.Option;
+d3.selection.prototype.moveToFront = function() {
+  return this.each(function() {
+    this.parentNode.appendChild(this);
+  });
+};
 class Main extends Component {
   constructor(props) {
     super(props);
@@ -35,6 +40,7 @@ class Main extends Component {
     this.handleGameSearchKeyDown = this.handleGameSearchKeyDown.bind(this);
     this.handleGameSearchSearch = this.handleGameSearchSearch.bind(this);
     this.handleClear = this.handleClear.bind(this);
+    this.handleTooltipClick = this.handleTooltipClick.bind(this);
   }
 
   componentDidMount() {
@@ -42,7 +48,8 @@ class Main extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (!this.props.data) return;
+    // if (!(this.props.data && this.props.data.length)) return;
+    if (this.props.loading) return;
     if (this.state.gameSearchValue === undefined) {
       d3.select("#tooltip_gamesearch")
         .style("opacity", 0)
@@ -57,8 +64,9 @@ class Main extends Component {
 
     if (this.state.gameSearchValue !== undefined) {
       d3.select("circle#circle_id__" + this.state.gameSearchValue)
-        .attr("opacity", 0.5)
+        .attr("opacity", 0.8)
         .attr("fill", "#ff1919")
+        .moveToFront()
         .transition();
       let c = document.getElementById(
         "circle_id__" + this.state.gameSearchValue
@@ -68,33 +76,13 @@ class Main extends Component {
           .getScreenCTM()
           .translate(+c.getAttribute("cx"), +c.getAttribute("cy"));
 
-        let tooltip = d3.select("#tooltip_gamesearch");
-        if (tooltip.empty()) {
-          d3.select("body")
-            .append("div")
-            .html(
-              this.props.dataMap["" + this.state.gameSearchValue][
-                "ResponseName"
-              ]
-            )
-            .style("left", window.pageXOffset + matrix.e - 100 + "px")
-            .style("top", window.pageYOffset + matrix.f + 20 + "px")
-            .attr("id", "tooltip_gamesearch")
-            .attr("class", "tooltip")
-            .style("opacity", 0.8);
-        } else {
-          tooltip
-            .html(
-              this.props.dataMap["" + this.state.gameSearchValue][
-                "ResponseName"
-              ]
-            )
-            .style("left", window.pageXOffset + matrix.e - 100 + "px")
-            .style("top", window.pageYOffset + matrix.f + 20 + "px")
-            .attr("id", "tooltip_gamesearch")
-            .attr("class", "tooltip")
-            .style("opacity", 0.8);
-        }
+        d3.select("#tooltip_gamesearch")
+          // .html(
+          //   this.props.dataMap["" + this.state.gameSearchValue]["ResponseName"]
+          // )
+          .style("left", window.pageXOffset + matrix.e - 100 + "px")
+          .style("top", window.pageYOffset + matrix.f + 20 + "px")
+          .style("opacity", 0.8);
       }
     }
 
@@ -365,6 +353,14 @@ class Main extends Component {
     });
   }
 
+  handleTooltipClick(e) {
+    console.log("tooltipclick");
+    this.setState({
+      showDataModal: true,
+      dataModalID: this.state.gameSearchValue
+    });
+  }
+
   render() {
     const { loading, data, dataMap } = this.props;
     const { dataModalID } = this.state;
@@ -478,6 +474,16 @@ class Main extends Component {
             </Radio.Group>
           </div>
         </div>
+        <Button
+          className="tooltip"
+          style={{ opacity: 0, position: "absolute" }}
+          id="tooltip_gamesearch"
+          onClick={this.handleTooltipClick}
+        >
+          {this.state.gameSearchValue !== undefined
+            ? dataMap[this.state.gameSearchValue].ResponseName
+            : ""}
+        </Button>
       </div>
     );
   }

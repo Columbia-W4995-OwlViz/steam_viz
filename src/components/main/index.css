@@ -38,6 +38,24 @@
   background-color: white;
 }
 
+.ant-btn.tooltip {
+  border: 1px solid white;
+  border-radius: 0;
+  color: white;
+  text-transform: uppercase;
+  font-family: "Press Start 2P", cursive;
+  font-size: 12px;
+  background-color: black;
+  width: auto;
+}
+
+.ant-btn.tooltip:hover,
+.ant-btn.tooltip:focus {
+  color: black;
+  border: none;
+  background-color: white;
+}
+
 .ant-select.my-select {
   min-width: 30vw;
   width: auto;
@@ -198,7 +216,8 @@ div.tooltip {
   font-family: "Press Start 2P", cursive;
   position: absolute;
   text-align: center;
-  width: 15vw;
+  min-width: 15vw;
+  width: auto;
   height: auto;
   padding: 10px;
   background: black;
