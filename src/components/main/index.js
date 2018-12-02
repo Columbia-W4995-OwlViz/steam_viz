@@ -16,7 +16,7 @@ class Main extends Component {
     super(props);
     this.state = {
       binThreshold: {
-        RecommendationCount: 200,
+        RecommendationCount: 50,
         Metacritic: 100,
         PriceInitial: 200
       },
@@ -48,9 +48,6 @@ class Main extends Component {
     console.log(this.props.endYear);
 
     if (this.state.gameSearchValue !== undefined) {
-      // d3.select("body")
-      //   .append("p")
-      //   .html("hello");
       d3.select("circle#id__" + this.state.gameSearchValue)
         .attr("opacity", 0.5)
         .attr("fill", "#ff1919")
@@ -71,26 +68,28 @@ class Main extends Component {
       console.log(
         d3.select("div#id__" + this.state.gameSearchValue).attr("opacity")
       );
-      // .attr("id", "id__" + this.state.gameSearchValue)
-    } else {
-      // div
-      //   .transition()
-      //   .duration(500)
-      //   .style("opacity", 0);
     }
-
-    const srch = new Search(this.props.data, this.props.dataMap, 25);
+    const filteredData = this.props.data.filter(item => {
+      const year = parseInt(this.extractYear(item.ReleaseDate));
+      return year >= this.props.startYear && year <= this.props.endYear;
+    });
+    console.log(filteredData.length);
     const bins = this.dataBins(
-      this.props.data,
+      filteredData,
       this.state.topFilter,
       this.state.bottomFilter
     );
+    let filteredDataMap = {};
+    filteredData.forEach(e => {
+      filteredDataMap[e.QueryID] = e;
+    });
+    const srch = new Search(filteredData, filteredDataMap, 25);
     this.setState({
       gameSearch: srch,
       gameSearchOptions: srch.exec(""),
       dataBins: bins
     });
-    this.drawChart(bins, this.props.dataMap);
+    this.drawChart(bins, filteredDataMap);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -138,18 +137,39 @@ class Main extends Component {
       prevState.canvasKey === this.state.canvasKey
     )
       return;
-    const srch = new Search(this.props.data, this.props.dataMap, 25);
+
+    const filteredData = this.props.data.filter(item => {
+      const year = parseInt(this.extractYear(item.ReleaseDate));
+      return year >= this.props.startYear && year <= this.props.endYear;
+    });
+    console.log(filteredData.length);
     const bins = this.dataBins(
-      this.props.data,
+      filteredData,
       this.state.topFilter,
       this.state.bottomFilter
     );
+    let filteredDataMap = {};
+    filteredData.forEach(e => {
+      filteredDataMap[e.QueryID] = e;
+    });
+    const srch = new Search(filteredData, filteredDataMap, 25);
     this.setState({
       gameSearch: srch,
       gameSearchOptions: srch.exec(""),
       dataBins: bins
     });
-    this.drawChart(bins, this.props.dataMap);
+    this.drawChart(bins, filteredDataMap);
+  }
+
+  extractYear(date) {
+    let time = date.split(" ");
+    if (time.length === 2) {
+      return time[1].length < 4 ? "2019" : time[1];
+    } else if (time.length === 3) {
+      return time[2].length < 4 ? "2019" : time[2];
+    } else {
+      return "2019";
+    }
   }
 
   //field: RecommendationCount
@@ -446,7 +466,11 @@ class Main extends Component {
             </Button>
           </div> */}
           <div id="header">
-            <Button type="primary" onClick={this.props.preludeShow}>
+            <Button
+              className="timeline-btn"
+              type="primary"
+              onClick={this.props.preludeShow}
+            >
               <Icon type="left" />
               Timeline
             </Button>

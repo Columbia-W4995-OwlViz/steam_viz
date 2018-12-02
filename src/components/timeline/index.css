@@ -2,7 +2,7 @@
 
 #timeline_svg {
   padding: 10px 0px;
-  opacity: 0.4;
+  /* opacity: 0.4; */
   height: auto;
 }
 
@@ -165,11 +165,18 @@ div h1 {
   height: auto;
 }
 
-#enter {
+/* #enter {
   position: absolute;
   width: 50vw;
   height: 100%;
   top: 50vh;
+  left: 25vw;
+} */
+
+#enter {
+  position: absolute;
+  width: 50vw;
+  top: 3vh;
   left: 25vw;
 }
 

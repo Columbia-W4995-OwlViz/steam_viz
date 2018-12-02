@@ -19,6 +19,25 @@
   opacity: 0.8;
 }
 
+.ant-btn.timeline-btn {
+  border: 1px solid white;
+  border-radius: 0;
+  color: white;
+  text-transform: uppercase;
+  font-family: "Press Start 2P", cursive;
+  font-size: 12px;
+  background-color: black;
+  margin-top: -10px;
+  margin-right: 78vw;
+  transition: color 0.5s, border 0.5s, background-color 0.5s;
+}
+
+.ant-btn.timeline-btn:hover {
+  color: black;
+  border: none;
+  background-color: white;
+}
+
 .ant-btn.my-clear-btn {
   border: 1px solid white;
   border-radius: 0;
@@ -27,8 +46,9 @@
   font-family: "Press Start 2P", cursive;
   font-size: 12px;
   background-color: black;
-  margin-top: 30px;
+  margin-top: 15px;
   margin-right: 50vw;
+  transition: color 0.5s, border 0.5s, background-color 0.5s;
 }
 
 .ant-btn.my-clear-btn:hover,
