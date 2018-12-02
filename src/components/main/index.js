@@ -63,32 +63,38 @@ class Main extends Component {
       let c = document.getElementById(
         "circle_id__" + this.state.gameSearchValue
       );
-      let matrix = c
-        .getScreenCTM()
-        .translate(+c.getAttribute("cx"), +c.getAttribute("cy"));
+      if (c) {
+        let matrix = c
+          .getScreenCTM()
+          .translate(+c.getAttribute("cx"), +c.getAttribute("cy"));
 
-      let tooltip = d3.select("#tooltip_gamesearch");
-      if (tooltip.empty()) {
-        d3.select("body")
-          .append("div")
-          .html(
-            this.props.dataMap["" + this.state.gameSearchValue]["ResponseName"]
-          )
-          .style("left", window.pageXOffset + matrix.e - 100 + "px")
-          .style("top", window.pageYOffset + matrix.f + 20 + "px")
-          .attr("id", "tooltip_gamesearch")
-          .attr("class", "tooltip")
-          .style("opacity", 0.8);
-      } else {
-        tooltip
-          .html(
-            this.props.dataMap["" + this.state.gameSearchValue]["ResponseName"]
-          )
-          .style("left", window.pageXOffset + matrix.e - 100 + "px")
-          .style("top", window.pageYOffset + matrix.f + 20 + "px")
-          .attr("id", "tooltip_gamesearch")
-          .attr("class", "tooltip")
-          .style("opacity", 0.8);
+        let tooltip = d3.select("#tooltip_gamesearch");
+        if (tooltip.empty()) {
+          d3.select("body")
+            .append("div")
+            .html(
+              this.props.dataMap["" + this.state.gameSearchValue][
+                "ResponseName"
+              ]
+            )
+            .style("left", window.pageXOffset + matrix.e - 100 + "px")
+            .style("top", window.pageYOffset + matrix.f + 20 + "px")
+            .attr("id", "tooltip_gamesearch")
+            .attr("class", "tooltip")
+            .style("opacity", 0.8);
+        } else {
+          tooltip
+            .html(
+              this.props.dataMap["" + this.state.gameSearchValue][
+                "ResponseName"
+              ]
+            )
+            .style("left", window.pageXOffset + matrix.e - 100 + "px")
+            .style("top", window.pageYOffset + matrix.f + 20 + "px")
+            .attr("id", "tooltip_gamesearch")
+            .attr("class", "tooltip")
+            .style("opacity", 0.8);
+        }
       }
     }
 
