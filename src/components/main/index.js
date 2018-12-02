@@ -27,7 +27,7 @@ class Main extends Component {
       dataModalID: 10,
       gameSearchValue: undefined,
       gameSearchOptions: [],
-      gameSearch: new Search(props.data, props.dataMap, 25),
+      gameSearch: new Search(props.data, props.dataMap, 50),
       dataBinsMap: {}
     };
     this.handleTopFilter = this.handleTopFilter.bind(this);
@@ -83,7 +83,7 @@ class Main extends Component {
     filteredData.forEach(e => {
       filteredDataMap[e.QueryID] = e;
     });
-    const srch = new Search(filteredData, filteredDataMap, 25);
+    const srch = new Search(filteredData, filteredDataMap, 50);
     this.setState({
       gameSearch: srch,
       gameSearchOptions: srch.exec(""),
@@ -152,7 +152,7 @@ class Main extends Component {
     filteredData.forEach(e => {
       filteredDataMap[e.QueryID] = e;
     });
-    const srch = new Search(filteredData, filteredDataMap, 25);
+    const srch = new Search(filteredData, filteredDataMap, 50);
     this.setState({
       gameSearch: srch,
       gameSearchOptions: srch.exec(""),
