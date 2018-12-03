@@ -232,9 +232,59 @@ class Timeline extends Component {
       .attr("cx", d => x(parseInt(d.x)))
       .attr("cy", d => y(parseInt(d.y)))
       .attr("r", 8)
+      .attr("xtrue", d => parseInt(d.x))
+      .attr("ytrue", d => parseInt(d.y))
       //.attr("fill", d => dotColor(parseInt(d.y)))
       .attr("fill", "white")
-      .attr("opacity", 0.5);
+      .attr("opacity", 0.5)
+      .on("mouseover", function(d) {
+        console.log(this.getAttribute("xtrue"), this.getAttribute("ytrue"));
+        d3.select(this)
+          .transition()
+          // .delay(50)
+          .attr("r", 30)
+          .attr("opacity", 0.4)
+          .attr("fill", "#ff1919")
+          .duration(50);
+        div
+          .transition()
+          .duration(200)
+          .style("opacity", 0.8);
+        let matrix = this.getScreenCTM().translate(
+          +this.getAttribute("cx"),
+          +this.getAttribute("cy")
+        );
+        div
+          .html(
+            "Year: " +
+              this.getAttribute("xtrue") +
+              "</br>" +
+              "Number: " +
+              this.getAttribute("ytrue")
+          )
+          .style("left", window.pageXOffset + matrix.e - 100 + "px")
+          .style("top", window.pageYOffset + matrix.f + 20 + "px");
+      })
+      .on("mouseout", function(d) {
+        d3.select(this)
+          .transition()
+          .delay(150)
+          .attr("r", 8)
+          .attr("opacity", 0.5)
+          // .attr("fill", d => dotColor(parseInt(d.y)))
+          .attr("fill", "white")
+          .duration(100);
+        div
+          .transition()
+          .duration(500)
+          .style("opacity", 0);
+      });
+
+    var div = d3
+      .select("body")
+      .append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
   }
 
   render() {
@@ -268,6 +318,9 @@ class Timeline extends Component {
             <Button className="my-btn" block onClick={this.showModal}>
               Enter Game
             </Button>
+            <p style={{ marginTop: "10px" }}>
+              Can you guess which game the dot represents?
+            </p>
             {/* <Radio.Group
               // value={this.state.topFilter}
               className="my-btn-group"
