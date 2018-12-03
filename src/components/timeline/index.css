@@ -127,19 +127,82 @@ div h1 {
   height: auto;
 }
 
-/* .ant-modal.my-modal > .ant-modal-content > .chapter > .ant-steps > .ant-steps-item > .ant-steps-item-tail {
-  background-color: white !important;
-  color: white;
+.ant-modal.my-modal
+  > .ant-modal-content
+  > .ant-modal-body
+  > .chapter
+  > .ant-steps
+  > .ant-steps-item
+  > .ant-steps-item-content
+  > .ant-steps-item-title {
+  color: white !important;
+  font-family: "Press Start 2P", cursive;
+  font-size: 12px;
 }
 
-.ant-modal.my-modal > .ant-modal-content > .chapter > .ant-steps > .ant-steps-item > .ant-steps-item-icon > .ant-steps-icon > .ant-steps-icon-dot {
+.ant-steps-item-finish
+  .ant-steps-item-icon
+  > .ant-steps-icon
+  .ant-steps-icon-dot {
+  background: #fff;
+}
+
+.ant-steps-item-finish .ant-steps-item-icon > .ant-steps-icon {
+  color: #fff;
+}
+.ant-steps-item-process
+  .ant-steps-item-icon
+  > .ant-steps-icon
+  .ant-steps-icon-dot {
+  background: #fff;
+}
+.ant-steps-item-wait
+  .ant-steps-item-icon
+  > .ant-steps-icon
+  .ant-steps-icon-dot {
+  background: #fff;
+}
+.ant-steps-item-process
+  .ant-steps-item-icon
+  > .ant-steps-icon
+  .ant-steps-icon-dot {
+  background: #fff !important;
+}
+.ant-steps-item-tail::after {
+  background-color: #fff;
+}
+.ant-steps-icon-dot {
+  background-color: #fff;
+}
+
+.ant-steps-item .ant-steps-item-finish::selection {
+  background: #fff;
+}
+.ant-steps-item-process
+  .ant-steps-item-icon
+  > .ant-steps-icon
+  .ant-steps-icon-dot {
+  background-color: #fff;
+}
+
+.ant-steps-item-finish > .ant-steps-item-tail:after {
+  background-color: #fff !important;
+}
+
+.ant-steps-item-finish
+  .ant-steps-item-icon
+  > .ant-steps-icon
+  .ant-steps-icon-dot {
+  background: #fff !important;
+}
+/*.ant-modal.my-modal > .ant-modal-content > .chapter > .ant-steps > .ant-steps-item > .ant-steps-item-icon > .ant-steps-icon > .ant-steps-icon-dot {
   background-color: white;
   color: white !important; 
 } */
 
-.anticon.my-icon {
+/* .anticon.my-icon {
   cursor: pointer;
-}
+} */
 
 .ant-btn.modal-btn {
   border: 2px solid white !important;
