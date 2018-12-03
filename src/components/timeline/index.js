@@ -20,9 +20,11 @@ class Timeline extends Component {
 
   componentDidMount() {
     document.body.style = "background: black;";
+    if (this.props.backFromMain) {
+      this.showModal();
+    }
 
     if (!this.props.data || this.props.data.length === 0) return;
-    console.log("didmount");
     const newData = this.dataMapper(
       this.props.data,
       "ReleaseDate",
@@ -56,14 +58,12 @@ class Timeline extends Component {
   };
 
   onCarouselChange(a, b, c) {
-    console.log(a);
     this.setState({
       chap: parseInt(a)
     });
   }
 
   dataMapper(data, xField, yField) {
-    console.log("dataMapper");
     let newData = [];
     data
       .filter(record => record[xField] && !Number.isNaN(record[xField]))
