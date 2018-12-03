@@ -230,6 +230,12 @@
   opacity: 0.8;
 }
 
+.cur-year-text {
+  color: white;
+  font-family: "Press Start 2P", cursive;
+  text-align: center;
+}
+
 div.tooltip {
   color: white;
   font-size: 12px;

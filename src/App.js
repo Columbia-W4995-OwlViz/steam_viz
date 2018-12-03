@@ -52,14 +52,17 @@ class App extends Component {
   preludeHide(chapter) {
     console.log("calling preludeHide");
     console.log(chapter);
-    this.setState({ prelude: false });
+    this.setState({
+      prelude: false,
+      progress: this.state.progress < chapter ? chapter : this.state.progress
+    });
     this.selectChapter(chapter);
   }
 
   preludeShow() {
     this.setState({ prelude: true });
     this.setState({
-      progress: this.state.progress < 3 ? this.state.progress + 1 : 3
+      progress: this.state.progress
     });
   }
 
@@ -76,7 +79,7 @@ class App extends Component {
       });
     } else if (chapter === 2) {
       this.setState({
-        startYear: 2003,
+        startYear: 2013,
         endYear: 2018
       });
     } else {

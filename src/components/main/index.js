@@ -474,6 +474,9 @@ class Main extends Component {
               <Icon type="left" />
               Timeline
             </Button>
+            <h3 className="cur-year-text">
+              {this.props.startYear} - {this.props.endYear}
+            </h3>
             <Button
               className="my-clear-btn"
               onClick={this.handleClear}
