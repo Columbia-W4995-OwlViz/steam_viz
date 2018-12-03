@@ -18,7 +18,8 @@ class App extends Component {
       prelude: true,
       progress: 0,
       startYear: 1997,
-      endYear: 2004
+      endYear: 2004,
+      backFromMain: false
     };
     this.preludeShow = this.preludeShow.bind(this);
     this.preludeHide = this.preludeHide.bind(this);
@@ -52,14 +53,19 @@ class App extends Component {
   preludeHide(chapter) {
     console.log("calling preludeHide");
     console.log(chapter);
-    this.setState({ prelude: false });
+    this.setState({
+      prelude: false,
+      progress: this.state.progress < chapter ? chapter : this.state.progress,
+      backFromMain: false
+    });
     this.selectChapter(chapter);
   }
 
   preludeShow() {
-    this.setState({ prelude: true });
     this.setState({
-      progress: this.state.progress < 3 ? this.state.progress + 1 : 3
+      prelude: true,
+      progress: this.state.progress,
+      backFromMain: true
     });
   }
 
@@ -76,7 +82,7 @@ class App extends Component {
       });
     } else if (chapter === 2) {
       this.setState({
-        startYear: 2003,
+        startYear: 2013,
         endYear: 2018
       });
     } else {
@@ -115,6 +121,7 @@ class App extends Component {
                     loading={this.state.loading}
                     preludeHide={this.preludeHide}
                     progress={this.state.progress}
+                    backFromMain={this.state.backFromMain}
                   />
                 ) : (
                   <Main
