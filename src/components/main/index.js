@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import * as d3 from "d3";
-import { Spin, Radio, Modal, Button, Select, Icon } from "antd";
+import { Spin, Radio, Modal, Button, Select, Icon, Slider } from "antd";
 import DataModalContent from "./components/DataModalContent";
 import Search from "./search";
 import "./index.css";
@@ -28,7 +28,8 @@ class Main extends Component {
       gameSearchValue: undefined,
       gameSearchOptions: [],
       gameSearch: new Search(props.data, props.dataMap, 50),
-      dataBinsMap: {}
+      dataBinsMap: {},
+      sliderFilter: 50
     };
     this.handleTopFilter = this.handleTopFilter.bind(this);
     this.handleBottomFilter = this.handleBottomFilter.bind(this);
@@ -40,6 +41,7 @@ class Main extends Component {
     this.handleGameSearchSearch = this.handleGameSearchSearch.bind(this);
     this.handleClear = this.handleClear.bind(this);
     this.handleTooltipClick = this.handleTooltipClick.bind(this);
+    this.handleSliderChange = this.handleSliderChange.bind(this);
   }
 
   componentDidMount() {
@@ -69,10 +71,15 @@ class Main extends Component {
         d3.select("div#id__" + this.state.gameSearchValue).attr("opacity")
       );
     }
-    const filteredData = this.props.data.filter(item => {
-      const year = parseInt(this.extractYear(item.ReleaseDate));
-      return year >= this.props.startYear && year <= this.props.endYear;
-    });
+    const filteredData = this.props.data
+      .filter(
+        item =>
+          item[this.state.bottomFilter] < this.state.sliderFilter * 1000000
+      )
+      .filter(item => {
+        const year = parseInt(this.extractYear(item.ReleaseDate));
+        return year >= this.props.startYear && year <= this.props.endYear;
+      });
     console.log(filteredData.length);
     const bins = this.dataBins(
       filteredData,
@@ -138,10 +145,15 @@ class Main extends Component {
     )
       return;
 
-    const filteredData = this.props.data.filter(item => {
-      const year = parseInt(this.extractYear(item.ReleaseDate));
-      return year >= this.props.startYear && year <= this.props.endYear;
-    });
+    const filteredData = this.props.data
+      .filter(
+        item =>
+          item[this.state.bottomFilter] < this.state.sliderFilter * 1000000
+      )
+      .filter(item => {
+        const year = parseInt(this.extractYear(item.ReleaseDate));
+        return year >= this.props.startYear && year <= this.props.endYear;
+      });
     console.log(filteredData.length);
     const bins = this.dataBins(
       filteredData,
@@ -427,6 +439,13 @@ class Main extends Component {
     });
   }
 
+  handleSliderChange(value) {
+    this.setState({
+      sliderFilter: value,
+      canvasKey: this.state.canvasKey + 1
+    });
+  }
+
   render() {
     const { loading, data, dataMap } = this.props;
     const { dataModalID } = this.state;
@@ -434,6 +453,15 @@ class Main extends Component {
     const options = gameSearchOptions.map(uid => (
       <Option key={uid}>{dataMap[uid].ResponseName}</Option>
     ));
+    const sliderMarks = {
+      "0.1": "0.1%",
+      1: "1%",
+      3: "3%",
+      10: "10%",
+      25: "25%",
+      50: "50%",
+      100: "100%"
+    };
     return (
       <div>
         <div id="canvas-wrapper">
@@ -519,6 +547,13 @@ class Main extends Component {
             </div>
           ) : (
             <div id="main-canvas" key={this.state.canvasKey}>
+              <Slider
+                marks={sliderMarks}
+                step={null}
+                defaultValue={50}
+                value={this.state.sliderFilter}
+                onChange={this.handleSliderChange}
+              />
               <svg id="main_svg" viewBox="-100 -100 1700 650" />
             </div>
           )}
