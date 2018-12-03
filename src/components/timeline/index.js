@@ -94,8 +94,8 @@ class Timeline extends Component {
     data = data.filter(record => record.y < 8000000);
     console.log("called drawTimeline");
     const svg = d3.select("#timeline_svg");
-    const width = 1600;
-    const height = 700;
+    const width = 1200;
+    const height = 600;
     const margin = { top: 100, right: 100, bottom: 100, left: 100 };
 
     const x = d3
@@ -240,12 +240,13 @@ class Timeline extends Component {
       .on("mouseover", function(d) {
         console.log(this.getAttribute("xtrue"), this.getAttribute("ytrue"));
         d3.select(this)
+          // .style("cursor", "pointer")
           .transition()
           // .delay(50)
           .attr("r", 30)
           .attr("opacity", 0.4)
           .attr("fill", "#ff1919")
-          .duration(50);
+          .duration(150);
         div
           .transition()
           .duration(200)
@@ -267,8 +268,9 @@ class Timeline extends Component {
       })
       .on("mouseout", function(d) {
         d3.select(this)
+          // .style("cursor", "default")
           .transition()
-          .delay(150)
+          .delay(100)
           .attr("r", 8)
           .attr("opacity", 0.5)
           // .attr("fill", d => dotColor(parseInt(d.y)))
@@ -312,7 +314,7 @@ class Timeline extends Component {
               <Spin size="large" />
             </div>
           ) : (
-            <svg id="timeline_svg" viewBox="-50 -100 1600 800" />
+            <svg id="timeline_svg" viewBox="-100 -100 1300 700" />
           )}
           <div id="enter">
             <Button className="my-btn" block onClick={this.showModal}>

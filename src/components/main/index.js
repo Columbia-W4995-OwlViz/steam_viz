@@ -154,7 +154,6 @@ class Main extends Component {
         const year = parseInt(this.extractYear(item.ReleaseDate));
         return year >= this.props.startYear && year <= this.props.endYear;
       });
-    console.log(filteredData.length);
     const bins = this.dataBins(
       filteredData,
       this.state.topFilter,
@@ -167,6 +166,11 @@ class Main extends Component {
     const srch = new Search(filteredData, filteredDataMap, 50);
     this.setState({
       gameSearch: srch,
+      gameSearchValue: Object.keys(filteredDataMap).includes(
+        this.state.gameSearchValue
+      )
+        ? this.state.gameSearchValue
+        : undefined,
       gameSearchOptions: srch.exec(""),
       dataBins: bins
     });
@@ -324,6 +328,7 @@ class Main extends Component {
       .attr("cx", d => x(d.name))
       .attr("cy", d => y(parseInt(d.y)))
       .attr("r", 8)
+      .attr("ytrue", d => parseInt(d.y))
       // .attr("fill", d => dotColor(parseInt(d.y)))
       .attr("fill", "white")
       .attr("opacity", 0.5)
@@ -333,6 +338,7 @@ class Main extends Component {
           // .attr("r", 10)
           .attr("opacity", 0.5)
           .attr("fill", "#ff1919")
+          .style("cursor", "pointer")
           .transition();
         div
           .transition()
@@ -343,12 +349,18 @@ class Main extends Component {
           +this.getAttribute("cy")
         );
         div
-          .html(dataMap[d.id]["ResponseName"])
+          .html(
+            dataMap[d.id]["ResponseName"] +
+              "</br>" +
+              "Number: " +
+              this.getAttribute("ytrue")
+          )
           .style("left", window.pageXOffset + matrix.e - 100 + "px")
           .style("top", window.pageYOffset + matrix.f + 20 + "px");
       })
       .on("mouseout", function(d) {
         d3.select(this)
+          .style("cursor", "default")
           .attr("r", 8)
           .attr("opacity", 0.5)
           // .attr("fill", d => dotColor(parseInt(d.y)))
@@ -548,6 +560,7 @@ class Main extends Component {
           ) : (
             <div id="main-canvas" key={this.state.canvasKey}>
               <Slider
+                className="my-slider"
                 marks={sliderMarks}
                 step={null}
                 defaultValue={50}

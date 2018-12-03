@@ -306,3 +306,37 @@ div.tooltip {
   margin: auto !important;
   display: block;
 }
+
+.ant-slider.my-slider {
+  margin-left: 4vw;
+  margin-right: 4vw;
+}
+
+.ant-slider-track {
+  background-color: grey !important;
+}
+
+.ant-slider-mark-text {
+  color: white !important;
+  font-family: "Press Start 2P", cursive;
+  font-size: 10px;
+  padding-top: 10px;
+}
+
+.ant-slider-handle {
+  border: 2px solid grey !important;
+}
+
+.ant-slider-handle:focus {
+  box-shadow: 0 0 0 5px grey !important;
+}
+
+.ant-slider-dot-active {
+  border-color: grey !important;
+}
+
+.ant-tooltip-inner {
+  color: white !important;
+  font-family: "Press Start 2P", cursive;
+  font-size: 10px;
+}
