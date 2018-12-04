@@ -144,7 +144,7 @@
 }
 
 .ant-radio-button-wrapper.my-btn {
-  width: 250px;
+  width: 300px !important;
   float: left;
   font-family: "Press Start 2P", cursive;
   font-size: 12px;
