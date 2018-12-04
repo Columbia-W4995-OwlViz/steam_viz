@@ -1,21 +1,36 @@
 import React, { Component } from "react";
+import ReactDOM from "react-dom";
 import * as d3 from "d3";
 import "./index.css";
-import { Button, Spin, Steps, Popover, Carousel, Modal, Icon } from "antd";
+import WordCloud from "react-d3-cloud";
+import {
+  Button,
+  Spin,
+  Steps,
+  Popover,
+  Carousel,
+  Modal,
+  Icon,
+  Select
+} from "antd";
 
 class Timeline extends Component {
   constructor(props) {
     super(props);
     this.state = {
       visible: false,
-      chap: 0
+      chap: 0,
+      words: [],
+      update: value => null
     };
     this.extractYear = this.extractYear.bind(this);
     this.drawTimeline = this.drawTimeline.bind(this);
+    this.drawGameCount = this.drawGameCount.bind(this);
     this.dataMapper = this.dataMapper.bind(this);
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
     this.onCarouselChange = this.onCarouselChange.bind(this);
+    this.handleSelectChange = this.handleSelectChange.bind(this);
   }
 
   componentDidMount() {
@@ -25,24 +40,48 @@ class Timeline extends Component {
     }
 
     if (!this.props.data || this.props.data.length === 0) return;
-    const newData = this.dataMapper(
+    const ownerData = this.dataMapper(
       this.props.data,
       "ReleaseDate",
       "SteamSpyOwners"
     );
-    this.drawTimeline(newData, "ReleaseDate", "SteamSpyOwners");
+    const playerData = this.dataMapper(
+      this.props.data,
+      "ReleaseDate",
+      "SteamSpyPlayersEstimate"
+    );
+    const countData = this.countMapper(ownerData);
+    this.setState({
+      update: this.drawGameCount(countData)
+    });
+    this.mapReduceReviews(this.props.data);
+    //this.drawTimeline(playerData, "#timeline_player_svg", "Year", "Number of Players");
+    //this.drawTimeline(ownerData, "#timeline_owner_svg", "Year", "Number of Owners");
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (!this.props.data) return;
     if (prevState.visible !== this.state.visible) return;
     if (prevState.chap !== this.state.chap) return;
-    const newData = this.dataMapper(
+    if (prevState.update !== this.state.update) return;
+    const ownerData = this.dataMapper(
       this.props.data,
       "ReleaseDate",
       "SteamSpyOwners"
     );
-    this.drawTimeline(newData, "ReleaseDate", "SteamSpyOwners");
+    const playerData = this.dataMapper(
+      this.props.data,
+      "ReleaseDate",
+      "SteamSpyPlayersEstimate"
+    );
+    const countData = this.countMapper(ownerData);
+    this.setState({
+      update: this.drawGameCount(countData)
+    });
+    // this.drawTimeline(playerData, "#timeline_player_svg", "Year", "Number of Players");
+    // this.drawTimeline(ownerData, "#timeline_owner_svg", "Year", "Number of Owners");
+    console.log("didupdate");
+    this.mapReduceReviews(this.props.data);
   }
 
   showModal = () => {
@@ -63,6 +102,17 @@ class Timeline extends Component {
     });
   }
 
+  handleSelectChange(value) {
+    console.log(value);
+    switch (value) {
+      case "count":
+        this.state.update((a, b) => parseInt(b.count) - parseInt(a.count));
+        break;
+      default:
+        this.state.update((a, b) => parseInt(a.year) - parseInt(b.year));
+    }
+  }
+
   dataMapper(data, xField, yField) {
     let newData = [];
     data
@@ -76,7 +126,92 @@ class Timeline extends Component {
       });
     console.log("logging new Data");
     console.log(newData);
-    return newData;
+    return newData.filter(
+      d =>
+        !Number.isNaN(parseInt(d.x)) &&
+        parseInt(d.x) > 1996 &&
+        parseInt(d.x) !== 2019
+    );
+  }
+
+  countMapper(data) {
+    console.log("countMapper");
+    let countData = [];
+    let retData = [];
+    data.forEach(d => {
+      countData.push(d.x);
+    });
+    let countMap = countData.reduce((map, year) => {
+      map[year] = (map[year] || 0) + 1;
+      return map;
+    }, Object.create(null));
+    for (let key in countMap) {
+      retData.push({ year: parseInt(key), count: countMap[key] });
+    }
+    console.log(retData);
+    return retData;
+  }
+
+  mapReduceReviews(data) {
+    let localwords = [];
+    console.log("mapreduce");
+    const reviews = data
+      .filter(
+        d =>
+          d["Reviews"] &&
+          !(d["Reviews"] === " ") &&
+          !d["Reviews"].includes("http")
+      )
+      .map(d =>
+        d["Reviews"]
+          .replace(
+            /[^\w\s]|and|or|is|a|in|its|the|with|of|also|not|to|it|only|be|this|into|if|lot|lots|you|from|on|for|me|e|r|just|my/gi,
+            ""
+          )
+          .split(/\s+/)
+      );
+    const reviewMap = reviews
+      .map(wordlist =>
+        wordlist
+          .filter(word => word.length > 2 && !/^\d+$/.test(word))
+          .reduce(function(list, word) {
+            list.push(word);
+            return list;
+          }, [])
+      )
+      .reduce(function(list, sublist) {
+        sublist.forEach(word => {
+          list.push(word);
+        });
+        return list;
+      }, [])
+      .reduce((map, word) => {
+        map[word] = (map[word] || 0) + 1;
+        return map;
+      }, Object.create(null));
+
+    for (let word in reviewMap) {
+      if (reviewMap[word] > 30) {
+        localwords.push({ text: word, value: reviewMap[word] });
+      }
+    }
+
+    const fontSizeMapper = word => Math.log2(word.value) * 5;
+    const rotate = word => word.value % 360;
+
+    ReactDOM.render(
+      <div>
+        <WordCloud
+          data={localwords}
+          fontSizeMapper={fontSizeMapper}
+          rotate={rotate}
+          height={800}
+          width={1500}
+          fontSizeMapper={word => word.value * 0.5}
+        />
+      </div>,
+      document.getElementById("wordcloud_left_div")
+    );
   }
 
   extractYear(date) {
@@ -90,10 +225,84 @@ class Timeline extends Component {
     }
   }
 
-  drawTimeline(data, xField, yField) {
+  drawGameCount(data) {
+    console.log("called drawGameCount");
+    const svg = d3.select("#gamecount_svg");
+    const width = 1200;
+    const height = 600;
+    const margin = { top: 100, right: 100, bottom: 100, left: 100 };
+
+    let x = d3
+      .scaleBand()
+      .domain(data.map(d => parseInt(d.year)))
+      .range([margin.left, width - margin.right])
+      .padding(0.1);
+
+    const y = d3
+      .scaleLinear()
+      .domain([0, d3.max(data, d => parseInt(d.count))])
+      .nice()
+      .range([height - margin.bottom, margin.top]);
+
+    let xAxis = g =>
+      g
+        .attr("transform", `translate(0,${height - margin.bottom})`)
+        .call(d3.axisBottom(x).tickSizeOuter(0));
+
+    const yAxis = g =>
+      g
+        .attr("transform", `translate(${margin.left},0)`)
+        .call(d3.axisLeft(y))
+        .call(g => g.select(".domain").remove());
+
+    let bar = svg
+      .append("g")
+      .attr("fill", "white")
+      .selectAll("rect")
+      .data(data)
+      .enter()
+      .append("rect")
+      .style("mix-blend-mode", "luminosity")
+      .attr("x", d => x(parseInt(d.year)))
+      .attr("y", d => y(parseInt(d.count)))
+      .attr("height", d => y(0) - y(parseInt(d.count)))
+      .attr("width", x.bandwidth());
+
+    let gx = svg
+      .append("g")
+      .call(xAxis)
+      .attr("color", "white");
+
+    svg
+      .append("g")
+      .call(yAxis)
+      .attr("color", "white");
+
+    const update = compare => {
+      console.log("inside update");
+      data.sort(compare);
+      x.domain(data.map(d => parseInt(d.year)));
+      const t = svg.transition().duration(750);
+
+      bar
+        .data(data, d => parseInt(d.year))
+        .order()
+        .transition(t)
+        .delay((d, i) => i * 20)
+        .attr("x", d => x(parseInt(d.year)));
+
+      gx.transition(t)
+        .call(xAxis)
+        .selectAll(".tick")
+        .delay((d, i) => i * 20);
+    };
+    return update;
+  }
+
+  drawTimeline(data, tag, xField, yField) {
     data = data.filter(record => record.y < 8000000);
     console.log("called drawTimeline");
-    const svg = d3.select("#timeline_svg");
+    const svg = d3.select(tag);
     const width = 1200;
     const height = 600;
     const margin = { top: 100, right: 100, bottom: 100, left: 100 };
@@ -101,15 +310,7 @@ class Timeline extends Component {
     const x = d3
       .scaleBand()
       .domain(
-        data
-          .filter(
-            d =>
-              !Number.isNaN(parseInt(d.x)) &&
-              parseInt(d.x) > 1996 &&
-              parseInt(d.x) !== 2019
-          )
-          .map(d => parseInt(d.x))
-          .sort((a, b) => parseInt(a) - parseInt(b))
+        data.map(d => parseInt(d.x)).sort((a, b) => parseInt(a) - parseInt(b))
       )
       .range([margin.left, width - margin.right]);
 
@@ -138,7 +339,7 @@ class Timeline extends Component {
             .attr("text-anchor", "start")
             .attr("font-weight", "bold")
             .attr("font-size", "12px")
-            .text("Year")
+            .text(xField)
         );
 
     const yAxis = g =>
@@ -160,36 +361,8 @@ class Timeline extends Component {
             .attr("text-anchor", "middle")
             .attr("font-weight", "bold")
             .attr("font-size", "12px")
-            .text("Number of Owners")
+            .text(yField)
         );
-
-    // const y2Axis = g =>
-    //   g.attr("transform", `translate(${margin.left + 435},0)`).call(
-    //     d3
-    //       .axisLeft(y)
-    //       .tickFormat(d3.format(".2s"))
-    //       .tickSize(15)
-    //       .tickPadding(8)
-    //   );
-
-    // const y3Axis = g =>
-    //   g.attr("transform", `translate(${margin.left + 900},0)`).call(
-    //     d3
-    //       .axisLeft(y)
-    //       .tickFormat(d3.format(".2s"))
-    //       .tickSize(15)
-    //       .tickPadding(8)
-    //   );
-
-    const dotColor = d3
-      .scaleLinear()
-      .domain([
-        0,
-        d3.median(data, d => parseInt(d.y)),
-        d3.max(data, d => parseInt(d.y))
-      ])
-      .nice()
-      .range(["orange", "white", "steelblue"]);
 
     svg
       .append("g")
@@ -206,22 +379,6 @@ class Timeline extends Component {
       .attr("color", "white")
       .style("font-size", "8px")
       .style("font-family", "'Press Start 2P', cursive");
-
-    // svg
-    //   .append("g")
-    //   .call(y2Axis)
-    //   .attr("stroke-width", 2)
-    //   .attr("font-weight", "bold")
-    //   .attr("color", "white")
-    //   .style("font-size", "14px")
-
-    // svg
-    //   .append("g")
-    //   .call(y3Axis)
-    //   .attr("stroke-width", 2)
-    //   .attr("font-weight", "bold")
-    //   .attr("color", "white")
-    //   .style("font-size", "14px")
 
     svg
       .append("g")
@@ -291,6 +448,7 @@ class Timeline extends Component {
 
   render() {
     const { loading } = this.props.loading;
+    const Option = Select.Option;
     const Step = Steps.Step;
     const customDot = (dot, { status, index }) => (
       <Popover
@@ -314,7 +472,24 @@ class Timeline extends Component {
               <Spin size="large" />
             </div>
           ) : (
-            <svg id="timeline_svg" viewBox="-100 -100 1300 700" />
+            <div id="visualizations">
+              <div id="gamecount_div">
+                <Select
+                  defaultValue="year"
+                  style={{ width: 120 }}
+                  onChange={this.handleSelectChange}
+                >
+                  <Option value="year">Year</Option>
+                  <Option value="count">Count</Option>
+                </Select>
+                <svg id="gamecount_svg" viewBox="-100 -20 1300 700" />
+              </div>
+              {/* <div id="timeline_div">
+                <svg id="timeline_owner_svg" viewBox="-100 -100 1300 700" />
+                {/* <svg id="timeline_player_svg" viewBox="-100 -100 1300 700" /> */}
+              {/* </div> */} */}
+              <div id="wordcloud_left_div" />
+            </div>
           )}
           <div id="enter">
             <Button className="my-btn" block onClick={this.showModal}>
@@ -323,21 +498,6 @@ class Timeline extends Component {
             <p style={{ marginTop: "10px" }}>
               Can you guess which game the dot represents?
             </p>
-            {/* <Radio.Group
-              // value={this.state.topFilter}
-              className="my-btn-group"
-              // onChange={this.handleTopFilter}
-            >
-              <Radio.Button value="Prelude" className="my-btn">
-                Prelude
-              </Radio.Button>
-              <Radio.Button value="Chapter 1" className="my-btn">
-                Chapter 1
-              </Radio.Button>
-              <Radio.Button value="Chapter 2" className="my-btn">
-                Chapter 2
-              </Radio.Button>
-            </Radio.Group> */}
             <Modal
               className="my-modal"
               title={<Icon className="my-icon" type="home" />}
@@ -362,7 +522,7 @@ class Timeline extends Component {
                 </Button>
               ]}
             >
-              <Carousel afterChange={this.onCarouselChange}>
+              <Carousel autoplay afterChange={this.onCarouselChange}>
                 <div>
                   <h1>
                     Prolog: <strong>1997 - 2004</strong>
