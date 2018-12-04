@@ -228,6 +228,25 @@ div h1 {
   height: auto;
 }
 
+.select-order {
+  width: 120px;
+  position: relative;
+  top: 130px;
+  font-family: "Press Start 2P", cursive !important;
+  font-size: 8px !important;
+  border-radius: 0px !important;
+  background-color: black !important;
+  border-color: white !important;
+  margin-top: 20px !important;
+  margin-right: 60px !important;
+}
+
+.ant-select-dropdown.drop-order {
+  font-family: "Press Start 2P", cursive !important;
+  font-size: 8px !important;
+  background-color: black !important;
+}
+
 /* #enter {
   position: absolute;
   width: 50vw;

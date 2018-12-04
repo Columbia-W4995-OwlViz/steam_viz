@@ -13,6 +13,7 @@ import {
   Icon,
   Select
 } from "antd";
+import { relative } from "path";
 
 class Timeline extends Component {
   constructor(props) {
@@ -475,8 +476,9 @@ class Timeline extends Component {
             <div id="visualizations">
               <div id="gamecount_div">
                 <Select
+                  className="select-order"
+                  dropdownClassName="drop-order"
                   defaultValue="year"
-                  style={{ width: 120 }}
                   onChange={this.handleSelectChange}
                 >
                   <Option value="year">Year</Option>
