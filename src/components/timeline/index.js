@@ -282,12 +282,18 @@ class Timeline extends Component {
     let gx = svg
       .append("g")
       .call(xAxis)
-      .attr("color", "white");
+      .attr("stroke-width", 2)
+      .attr("color", "white")
+      .style("font-size", "8px")
+      .style("font-family", "'Press Start 2P', cursive");
 
     svg
       .append("g")
       .call(yAxis)
-      .attr("color", "white");
+      .attr("stroke-width", 2)
+      .attr("color", "white")
+      .style("font-size", "8px")
+      .style("font-family", "'Press Start 2P', cursive");
 
     const update = compare => {
       console.log("inside update");
