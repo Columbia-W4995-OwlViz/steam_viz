@@ -57,7 +57,12 @@ class Timeline extends Component {
     });
     this.mapReduceReviews(this.props.data);
     //this.drawTimeline(playerData, "#timeline_player_svg", "Year", "Number of Players");
-    //this.drawTimeline(ownerData, "#timeline_owner_svg", "Year", "Number of Owners");
+    this.drawTimeline(
+      ownerData,
+      "#timeline_owner_svg",
+      "Year",
+      "Number of Owners"
+    );
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -80,7 +85,12 @@ class Timeline extends Component {
       update: this.drawGameCount(countData)
     });
     // this.drawTimeline(playerData, "#timeline_player_svg", "Year", "Number of Players");
-    // this.drawTimeline(ownerData, "#timeline_owner_svg", "Year", "Number of Owners");
+    this.drawTimeline(
+      ownerData,
+      "#timeline_owner_svg",
+      "Year",
+      "Number of Owners"
+    );
     console.log("didupdate");
     this.mapReduceReviews(this.props.data);
   }
@@ -465,7 +475,6 @@ class Timeline extends Component {
     return (
       <div>
         <div id="canvas-wrapper">
-          {/* <Trivia /> */}
           {loading ? (
             <div className="loading">
               <br />
@@ -474,6 +483,10 @@ class Timeline extends Component {
             </div>
           ) : (
             <div id="visualizations">
+              <div id="timeline_div">
+                <svg id="timeline_owner_svg" viewBox="-100 -100 1300 700" />
+                {/* <svg id="timeline_player_svg" viewBox="-100 -100 1300 700" />*/}
+              </div>
               <div id="gamecount_div">
                 <Select
                   className="select-order"
@@ -486,10 +499,6 @@ class Timeline extends Component {
                 </Select>
                 <svg id="gamecount_svg" viewBox="-100 -20 1300 700" />
               </div>
-              {/* <div id="timeline_div">
-                <svg id="timeline_owner_svg" viewBox="-100 -100 1300 700" />
-                {/* <svg id="timeline_player_svg" viewBox="-100 -100 1300 700" /> */}
-              {/* </div> */} */}
               <div id="wordcloud_left_div" />
             </div>
           )}

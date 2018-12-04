@@ -235,8 +235,6 @@ div h1 {
   font-family: "Press Start 2P", cursive !important;
   font-size: 8px !important;
   border-radius: 0px !important;
-  background-color: black !important;
-  border-color: white !important;
   margin-top: 20px !important;
   margin-right: 60px !important;
 }
@@ -244,7 +242,6 @@ div h1 {
 .ant-select-dropdown.drop-order {
   font-family: "Press Start 2P", cursive !important;
   font-size: 8px !important;
-  background-color: black !important;
 }
 
 /* #enter {
