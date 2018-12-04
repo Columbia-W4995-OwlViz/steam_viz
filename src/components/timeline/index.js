@@ -216,8 +216,8 @@ class Timeline extends Component {
           data={localwords}
           fontSizeMapper={fontSizeMapper}
           rotate={rotate}
-          height={800}
-          width={1500}
+          height={700}
+          width={1200}
           fontSizeMapper={word => word.value * 0.5}
         />
       </div>,
@@ -514,6 +514,21 @@ class Timeline extends Component {
             </Button>
             <p style={{ marginTop: "10px" }}>
               Can you guess which game the dot represents?
+            </p>
+            <p
+              style={{
+                marginTop: "91vh",
+                marginRight: "5vw",
+                fontSize: "20px"
+              }}
+            >
+              Explore other visualizations
+            </p>
+            <p style={{ marginTop: "3vh", marginRight: "5vw" }}>
+              Number of games published on Steam in each year
+            </p>
+            <p style={{ marginTop: "81vh", marginRight: "5vw" }}>
+              Word cloud of game reviews on Steam
             </p>
             <Modal
               className="my-modal"
